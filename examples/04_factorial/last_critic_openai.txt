@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=620 out=293 reasoning=226 latency=6.33s ===
+VERDICT: PASS
+REASON: The theorem gives the base case and the recursive equation for all natural inputs, which uniquely characterizes the factorial behavior implemented by the Python function for n >= 0. It is not merely a boundary case or tautology.
+STRONGER_THEOREM:
+n/a

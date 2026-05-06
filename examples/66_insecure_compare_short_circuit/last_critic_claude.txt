@@ -1,0 +1,11 @@
+=== critic  model=claude-opus-4-7  in=1514 out=388 reasoning=0 latency=6.43s ===
+VERDICT: WEAK
+REASON: The theorem captures functional correctness (returns true iff equal), but the docstring/function name implies a security property — this is the *insecure* short-circuit version, and the theorem says nothing about its short-circuit/timing behavior that distinguishes it from a constant-time version. Still, for pure functional behavior the iff is tight; the weakness is missing the short-circuit characterization.
+STRONGER_THEOREM:
+theorem insecureCompareShortCircuit_short_circuits (e s : List Nat) (i : Nat)
+    (hlen : e.length = s.length) (hi : i < e.length)
+    (hprefix : ∀ j < i, e.get! j = s.get! j) (hne : e.get! i ≠ s.get! i) :
+    insecureCompareShortCircuit e s = false ∧
+    (∀ e' s' : List Nat, e'.length = e.length → s'.length = s.length →
+      (∀ j ≤ i, e'.get! j = e.get! j ∧ s'.get! j = s.get! j) →
+      insecureCompareShortCircuit e' s' = false) := by sorry

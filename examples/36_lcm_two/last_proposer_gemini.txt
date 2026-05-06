@@ -1,0 +1,137 @@
+=== translate  model=gemini-3.1-pro-preview  in=697 out=18161 reasoning=17537 latency=143.51s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcd_helper (x y : Nat) : Nat :=
+  if h : y = 0 then
+    x
+  else
+    gcd_helper y (x % y)
+termination_by y
+decreasing_by omega
+
+def lcmTwo (a b : Nat) : Nat :=
+  if a = 0 ∨ b = 0 then
+    0
+  else
+    (a / gcd_helper a b) * b
+
+lemma gcd_helper_one_right (a : Nat) : gcd_helper a 1 = 1 := by
+  rw [gcd_helper]
+  have h_neq : ¬(1 = 0) := by decide
+  have h_mod : a % 1 = 0 := by omega
+  simp [h_neq, h_mod]
+  rw [gcd_helper]
+  simp
+
+lemma gcd_helper_one_left (a : Nat) (h : a ≠ 0) : gcd_helper 1 a = 1 := by
+  by_cases h2 : a = 1
+  · subst h2
+    rw [gcd_helper]
+    have h_neq : ¬(1 = 0) := by decide
+    have h_mod : 1 % 1 = 0 := by decide
+    simp [h_neq, h_mod]
+    rw [gcd_helper]
+    simp
+  · rw [gcd_helper]
+    have h_lt : 1 < a := by omega
+    have h_mod : 1 % a = 1 := Nat.mod_eq_of_lt h_lt
+    simp [h, h_mod]
+    exact gcd_helper_one_right a
+
+theorem lcmTwo_correct (a : Nat) :
+  lcmTwo a 0 = 0 ∧
+  lcmTwo 0 a = 0 ∧
+  lcmTwo a 1 = a ∧
+  lcmTwo 1 a = a := by
+  constructor
+  · unfold lcmTwo
+    simp
+  · constructor
+    · unfold lcmTwo
+      simp
+    · constructor
+      · unfold lcmTwo
+        by_cases h : a = 0
+        · simp [h]
+        · have h1 : ¬(a = 0 ∨ 1 = 0) := by omega
+          simp [h1]
+          rw [gcd_helper_one_right a]
+          omega
+      · unfold lcmTwo
+        by_cases h : a = 0
+        · simp [h]
+        · have h1 : ¬(1 = 0 ∨ a = 0) := by omega
+          simp [h1]
+          rw [gcd_helper_one_left a h]
+          omega
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=1651 out=19192 reasoning=18661 latency=143.12s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcd_helper (x y : Nat) : Nat :=
+  if h : y = 0 then
+    x
+  else
+    gcd_helper y (x % y)
+termination_by y
+decreasing_by
+  have h_pos : 0 < y := by omega
+  exact Nat.mod_lt x h_pos
+
+def lcmTwo (a b : Nat) : Nat :=
+  if a = 0 ∨ b = 0 then
+    0
+  else
+    (a / gcd_helper a b) * b
+
+theorem gcd_helper_one_right (a : Nat) : gcd_helper a 1 = 1 := by
+  rw [gcd_helper]
+  have h_mod : a % 1 = 0 := by omega
+  simp [h_mod]
+  rw [gcd_helper]
+  simp
+
+theorem gcd_helper_one_left (a : Nat) (h : a ≠ 0) : gcd_helper 1 a = 1 := by
+  by_cases h2 : a = 1
+  · subst h2
+    exact gcd_helper_one_right 1
+  · rw [gcd_helper]
+    have h_mod : 1 % a = 1 := Nat.mod_eq_of_lt (by omega)
+    simp [h, h_mod]
+    exact gcd_helper_one_right a
+
+theorem lcmTwo_correct (a : Nat) :
+  lcmTwo a 0 = 0 ∧
+  lcmTwo 0 a = 0 ∧
+  lcmTwo a 1 = a ∧
+  lcmTwo 1 a = a := by
+  constructor
+  · rw [lcmTwo]
+    simp
+  · constructor
+    · rw [lcmTwo]
+      simp
+    · constructor
+      · rw [lcmTwo]
+        by_cases h : a = 0
+        · simp [h]
+        · simp [h]
+          rw [gcd_helper_one_right a]
+          simp
+      · rw [lcmTwo]
+        by_cases h : a = 0
+        · simp [h]
+        · simp [h]
+          rw [gcd_helper_one_left a h]
+          simp
+
+end RepoVerifyAutogen
+```
+

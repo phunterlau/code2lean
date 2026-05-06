@@ -1,0 +1,49 @@
+import Std
+
+namespace RepoVerifyAutogen
+
+def ceilDivNat (m n : Nat) : Nat :=
+  (m + n - 1) / n
+
+def pythonFloorDiv (a b : Int) : Int :=
+  match a, b with
+  | _, Int.ofNat 0 => 0
+  | Int.ofNat m, Int.ofNat (Nat.succ n) =>
+      Int.ofNat (m / Nat.succ n)
+  | Int.ofNat m, Int.negSucc n =>
+      -Int.ofNat (ceilDivNat m (Nat.succ n))
+  | Int.negSucc m, Int.ofNat (Nat.succ n) =>
+      -Int.ofNat (ceilDivNat (Nat.succ m) (Nat.succ n))
+  | Int.negSucc m, Int.negSucc n =>
+      Int.ofNat (Nat.succ m / Nat.succ n)
+
+def pythonModulo (a b : Int) : Int :=
+  a - b * pythonFloorDiv a b
+
+def divmodPair (a b : Int) : Int × Int :=
+  if b = 0 then
+    (0, a)
+  else
+    (pythonFloorDiv a b, pythonModulo a b)
+
+theorem divmodPair_correct (a b : Int) :
+    (b = 0 → divmodPair a b = (0, a)) ∧
+      (b ≠ 0 → divmodPair a b = (pythonFloorDiv a b, pythonModulo a b)) := by
+  by_cases h : b = 0
+  · simp [divmodPair, h]
+  · simp [divmodPair, h]
+
+end RepoVerifyAutogen
+
+-- Orchestrator-appended diagnostics. Do not edit by hand.
+
+open RepoVerifyAutogen
+#eval "ORCH-DIAG-BEGIN-7c8e9d2a"
+#eval divmodPair 0 0
+#eval divmodPair 7 0
+#eval divmodPair 7 3
+#eval divmodPair 12 4
+#eval divmodPair 14 5
+#eval "ORCH-DIAG-END-7c8e9d2a"
+#print axioms RepoVerifyAutogen.divmodPair_correct
+

@@ -1,0 +1,5 @@
+=== critic  model=claude-opus-4-7  in=1140 out=115 reasoning=0 latency=2.55s ===
+VERDICT: PASS
+REASON: The theorem characterizes listDropWhilePos as List.dropWhile (· != 0), which exactly matches the Python spec: drop elements until the first 0, then return that suffix (or [] if none). This fully pins down behavior on all inputs.
+STRONGER_THEOREM:
+n/a

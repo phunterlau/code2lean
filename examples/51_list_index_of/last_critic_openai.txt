@@ -1,0 +1,14 @@
+=== critic  model=gpt-5.5  in=1038 out=1402 reasoning=1200 latency=24.13s ===
+VERDICT: WEAK
+REASON: The theorem only characterizes when the function returns -1, so it proves the absent-case sentinel behavior but says nothing about what index is returned when x is present. It does not establish that the returned index is the first occurrence, so many buggy implementations that return any non--1 value on presence would satisfy it.
+STRONGER_THEOREM:
+namespace RepoVerifyAutogen
+
+theorem listIndexOf_correct_strong (xs : List Int) (x : Int) :
+    (listIndexOf xs x = -1 ↔ ¬ (x ∈ xs)) ∧
+    (∀ n : Nat,
+      listIndexOf xs x = Int.ofNat n ↔
+        (n < xs.length ∧ xs.get? n = some x ∧
+          ∀ m : Nat, m < n → xs.get? m ≠ some x)) := by sorry
+
+end RepoVerifyAutogen

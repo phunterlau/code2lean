@@ -1,0 +1,6 @@
+=== critic  model=gpt-5.5  in=865 out=634 reasoning=516 latency=10.95s ===
+VERDICT: WEAK
+REASON: The theorem only proves a range property and the special case for m = 0; it does not state that the result equals (a ** b) % m. Many incorrect implementations returning any value below m would satisfy it.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.powModSmall_correct_strong (a b m : Nat) :
+    RepoVerifyAutogen.powModSmall a b m = if m = 0 then 0 else (a ^ b) % m := by sorry

@@ -1,0 +1,47 @@
+=== translate  model=gemini-3.1-pro-preview  in=665 out=15806 reasoning=15659 latency=130.25s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def divmodPair (a b : Nat) : Nat × Nat :=
+  if b = 0 then
+    (0, a)
+  else
+    (a / b, a % b)
+
+theorem divmodPair_correct (a b : Nat) :
+  (divmodPair a b).1 * b + (divmodPair a b).2 = a := by
+  unfold divmodPair
+  by_cases h : b = 0
+  · simp [h]
+  · simp [h]
+    exact Nat.div_add_mod a b
+
+end RepoVerifyAutogen
+```
+
+=== repair_0  model=gemini-3.1-pro-preview  in=540 out=2655 reasoning=2492 latency=21.17s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def divmodPair (a b : Nat) : Nat × Nat :=
+  if b = 0 then
+    (0, a)
+  else
+    (a / b, a % b)
+
+theorem divmodPair_correct (a b : Nat) :
+  (divmodPair a b).1 * b + (divmodPair a b).2 = a := by
+  unfold divmodPair
+  by_cases h : b = 0
+  · simp [h]
+  · simp [h]
+    rw [Nat.mul_comm (a / b) b]
+    exact Nat.div_add_mod a b
+
+end RepoVerifyAutogen
+```
+

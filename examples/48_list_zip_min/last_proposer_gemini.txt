@@ -1,0 +1,40 @@
+=== translate  model=gemini-3.1-pro-preview  in=687 out=13756 reasoning=13408 latency=107.00s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listZipMin : List Int → List Int → List Int
+  | [], _ => []
+  | _::_, [] => []
+  | x::xs, y::ys => (if x < y then x else y) :: listZipMin xs ys
+
+theorem listZipMin_correct (xs ys : List Int) : listZipMin xs ys = listZipMin ys xs := by
+  induction xs generalizing ys with
+  | nil =>
+    cases ys <;> rfl
+  | cons x xs ih =>
+    cases ys with
+    | nil => rfl
+    | cons y ys =>
+      unfold listZipMin
+      have h_eq : (if x < y then x else y) = (if y < x then y else x) := by
+        by_cases c1 : x < y
+        · have c2 : ¬ (y < x) := by omega
+          simp [c1, c2]
+        · by_cases c2 : y < x
+          · simp [c1, c2]
+          · have eq : x = y := by omega
+            subst eq
+            rfl
+      rw [h_eq, ih ys]
+
+theorem listZipMin_idem (xs : List Int) : listZipMin xs xs = xs := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    unfold listZipMin
+    have c : ¬ (x < x) := by omega
+    simp [c, ih]
+
+end RepoVerifyAutogen
+

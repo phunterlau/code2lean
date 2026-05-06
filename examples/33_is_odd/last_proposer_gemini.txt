@@ -1,0 +1,14 @@
+=== translate  model=gemini-3.1-pro-preview  in=616 out=4000 reasoning=3922 latency=32.37s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def isOdd (n : Nat) : Bool :=
+  n % 2 == 1
+
+theorem isOdd_correct (n : Nat) : isOdd n = true ↔ n % 2 = 1 := by
+  unfold isOdd
+  exact beq_iff_eq
+
+end RepoVerifyAutogen
+

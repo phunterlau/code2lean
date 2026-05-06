@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=644 out=113 reasoning=49 latency=4.44s ===
+VERDICT: PASS
+REASON: The theorem universally characterizes `incrementAll` as mapping every input element to `x + 1`, which is exactly the Python function's behavior. It is not limited to boundary cases or tautological.
+STRONGER_THEOREM:
+n/a

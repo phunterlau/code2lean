@@ -1,0 +1,24 @@
+=== translate  model=gemini-3.1-pro-preview  in=635 out=25538 reasoning=25390 latency=205.00s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listMember (x : Nat) : List Nat → Bool
+  | [] => false
+  | y :: ys => if x == y then true else listMember x ys
+
+theorem listMember_correct (x : Nat) (xs : List Nat) :
+    listMember x xs = true ↔ x ∈ xs := by
+  induction xs with
+  | nil =>
+    unfold listMember
+    simp
+  | cons y ys ih =>
+    unfold listMember
+    by_cases hxy : x = y
+    · subst hxy
+      simp
+    · simp [hxy, ih]
+
+end RepoVerifyAutogen
+

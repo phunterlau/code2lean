@@ -1,0 +1,16 @@
+=== translate  model=gemini-3.1-pro-preview  in=616 out=17819 reasoning=17729 latency=141.39s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def isEven (n : Nat) : Bool :=
+  n % 2 == 0
+
+theorem isEven_correct (n : Nat) : isEven n = true ↔ n % 2 = 0 := by
+  unfold isEven
+  cases n % 2 with
+  | zero => simp
+  | succ m => simp
+
+end RepoVerifyAutogen
+

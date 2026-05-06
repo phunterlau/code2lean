@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=775 out=183 reasoning=111 latency=4.81s ===
+VERDICT: PASS
+REASON: The theorem covers all inputs under the stated precondition lo ≤ hi and characterizes each branch of the Python clamp: below range returns lo, above range returns hi, otherwise returns x, while also proving the result lies in [lo, hi].
+STRONGER_THEOREM:
+n/a

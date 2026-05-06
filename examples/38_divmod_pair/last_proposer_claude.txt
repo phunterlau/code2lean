@@ -1,0 +1,13 @@
+=== translate  model=claude-opus-4-7  in=944 out=151 reasoning=0 latency=5.09s ===
+namespace RepoVerifyAutogen
+
+def divmodPair (a : Int) (b : Int) : Int × Int :=
+  if b = 0 then (0, a) else (a / b, a % b)
+
+theorem divmodPair_correct (a b : Int) :
+    divmodPair a b = if b = 0 then (0, a) else (a / b, a % b) := by
+  unfold divmodPair
+  rfl
+
+end RepoVerifyAutogen
+

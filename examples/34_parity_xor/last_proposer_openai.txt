@@ -1,0 +1,125 @@
+=== translate  model=gpt-5.5  in=597 out=4684 reasoning=4344 latency=68.25s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def parityXor (a b : Nat) : Bool :=
+  decide ((a % 2) ≠ (b % 2))
+
+def isOdd (n : Nat) : Prop :=
+  n % 2 = 1
+
+lemma mod_two_eq_zero_or_one (n : Nat) : n % 2 = 0 ∨ n % 2 = 1 := by
+  have hlt : n % 2 < 2 := Nat.mod_lt n (by decide)
+  omega
+
+theorem parityXor_correct (a b : Nat) :
+    parityXor a b = true ↔
+      ((isOdd a ∧ ¬ isOdd b) ∨ (¬ isOdd a ∧ isOdd b)) := by
+  unfold parityXor
+  unfold isOdd
+  have ha : a % 2 = 0 ∨ a % 2 = 1 := mod_two_eq_zero_or_one a
+  have hb : b % 2 = 0 ∨ b % 2 = 1 := mod_two_eq_zero_or_one b
+  cases ha with
+  | inl ha0 =>
+      cases hb with
+      | inl hb0 =>
+          simp [ha0, hb0]
+      | inr hb1 =>
+          simp [ha0, hb1]
+  | inr ha1 =>
+      cases hb with
+      | inl hb0 =>
+          simp [ha1, hb0]
+      | inr hb1 =>
+          simp [ha1, hb1]
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gpt-5.5  in=894 out=6072 reasoning=5648 latency=100.17s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def parityXor (a b : Nat) : Bool :=
+  decide ((a % 2) ≠ (b % 2))
+
+def isOdd (n : Nat) : Prop :=
+  n % 2 = 1
+
+theorem mod_two_eq_zero_or_one (n : Nat) : n % 2 = 0 ∨ n % 2 = 1 := by
+  have hlt : n % 2 < 2 := Nat.mod_lt n (by decide)
+  generalize h : n % 2 = r at hlt ⊢
+  cases r with
+  | zero =>
+      exact Or.inl rfl
+  | succ r =>
+      cases r with
+      | zero =>
+          exact Or.inr rfl
+      | succ r =>
+          have hfalse : False := by
+            simpa using hlt
+          exact False.elim hfalse
+
+theorem parityXor_correct (a b : Nat) :
+    parityXor a b = true ↔
+      ((isOdd a ∧ ¬ isOdd b) ∨ (¬ isOdd a ∧ isOdd b)) := by
+  unfold parityXor
+  unfold isOdd
+  have ha : a % 2 = 0 ∨ a % 2 = 1 := mod_two_eq_zero_or_one a
+  have hb : b % 2 = 0 ∨ b % 2 = 1 := mod_two_eq_zero_or_one b
+  cases ha with
+  | inl ha0 =>
+      cases hb with
+      | inl hb0 =>
+          simp [ha0, hb0]
+      | inr hb1 =>
+          simp [ha0, hb1]
+  | inr ha1 =>
+      cases hb with
+      | inl hb0 =>
+          simp [ha1, hb0]
+      | inr hb1 =>
+          simp [ha1, hb1]
+
+end RepoVerifyAutogen
+
+=== repair_1  model=gpt-5.5  in=737 out=857 reasoning=516 latency=14.71s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def parityXor (a b : Nat) : Bool :=
+  decide ((a % 2) ≠ (b % 2))
+
+def isOdd (n : Nat) : Prop :=
+  n % 2 = 1
+
+theorem mod_two_eq_zero_or_one (n : Nat) : n % 2 = 0 ∨ n % 2 = 1 := by
+  have hlt : n % 2 < 2 := Nat.mod_lt n (by decide)
+  omega
+
+theorem parityXor_correct (a b : Nat) :
+    parityXor a b = true ↔
+      ((isOdd a ∧ ¬ isOdd b) ∨ (¬ isOdd a ∧ isOdd b)) := by
+  unfold parityXor
+  unfold isOdd
+  have ha : a % 2 = 0 ∨ a % 2 = 1 := mod_two_eq_zero_or_one a
+  have hb : b % 2 = 0 ∨ b % 2 = 1 := mod_two_eq_zero_or_one b
+  cases ha with
+  | inl ha0 =>
+      cases hb with
+      | inl hb0 =>
+          simp [ha0, hb0]
+      | inr hb1 =>
+          simp [ha0, hb1]
+  | inr ha1 =>
+      cases hb with
+      | inl hb0 =>
+          simp [ha1, hb0]
+      | inr hb1 =>
+          simp [ha1, hb1]
+
+end RepoVerifyAutogen
+

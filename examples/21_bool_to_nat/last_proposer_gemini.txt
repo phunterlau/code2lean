@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=626 out=2938 reasoning=2825 latency=23.07s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def boolToNat (flag : Bool) : Nat :=
+  if flag then 1 else 0
+
+theorem boolToNat_correct (flag : Bool) :
+  (boolToNat flag = 1 ↔ flag = true) ∧
+  (boolToNat flag = 0 ↔ flag = false) := by
+  cases flag
+  · simp [boolToNat]
+  · simp [boolToNat]
+
+end RepoVerifyAutogen
+```
+

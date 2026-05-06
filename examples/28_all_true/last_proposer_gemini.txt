@@ -1,0 +1,77 @@
+=== translate  model=gemini-3.1-pro-preview  in=628 out=25758 reasoning=25475 latency=200.41s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def allTrue : List Bool → Bool
+  | [] => true
+  | false :: _ => false
+  | true :: xs => allTrue xs
+
+theorem allTrue_correct (xs : List Bool) : allTrue xs = true ↔ ∀ x, x ∈ xs → x = true := by
+  induction xs with
+  | nil =>
+    exact ⟨fun _ x hx => by cases hx, fun _ => rfl⟩
+  | cons h t ih =>
+    cases h with
+    | false =>
+      exact ⟨
+        fun h1 => by cases h1,
+        fun h1 => by
+          have h2 : false ∈ false :: t := List.Mem.head t
+          have h3 : false = true := h1 false h2
+          cases h3
+      ⟩
+    | true =>
+      exact ⟨
+        fun h1 x hx => match hx with
+          | List.Mem.head _ => rfl
+          | List.Mem.tail _ hxt => Iff.mp ih h1 x hxt,
+        fun h1 => Iff.mpr ih (fun y hy => h1 y (List.Mem.tail true hy))
+      ⟩
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=933 out=11214 reasoning=10945 latency=86.96s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def allTrue : List Bool → Bool
+  | [] => true
+  | false :: _ => false
+  | true :: xs => allTrue xs
+
+theorem allTrue_correct (xs : List Bool) : allTrue xs = true ↔ ∀ x, x ∈ xs → x = true := by
+  induction xs with
+  | nil =>
+    apply Iff.intro
+    · intro h1 x hx
+      cases hx
+    · intro h1
+      rfl
+  | cons h t ih =>
+    cases h with
+    | false =>
+      apply Iff.intro
+      · intro h1
+        cases h1
+      · intro h1
+        have h2 : false = true := h1 false (List.Mem.head t)
+        cases h2
+    | true =>
+      apply Iff.intro
+      · intro h1 x hx
+        cases hx
+        · rfl
+        · apply ih.mp h1
+          assumption
+      · intro h1
+        apply ih.mpr
+        intro y hy
+        exact h1 y (List.Mem.tail true hy)
+
+end RepoVerifyAutogen
+```
+

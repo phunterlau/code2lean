@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=632 out=286 reasoning=221 latency=7.40s ===
+VERDICT: PASS
+REASON: The theorem universally characterizes the Boolean result: `parityXor a b` is true exactly when the two inputs have different parity remainders modulo 2, matching the Python implementation and docstring.
+STRONGER_THEOREM:
+n/a

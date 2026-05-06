@@ -1,0 +1,17 @@
+=== translate  model=claude-opus-4-7  in=942 out=180 reasoning=0 latency=2.77s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listFilterEven (xs : List Int) : List Int :=
+  xs.filter (fun x => x % 2 == 0)
+
+theorem listFilterEven_correct (xs : List Int) :
+    ∀ x, x ∈ listFilterEven xs ↔ x ∈ xs ∧ x % 2 = 0 := by
+  intro x
+  unfold listFilterEven
+  rw [List.mem_filter]
+  simp
+
+end RepoVerifyAutogen
+

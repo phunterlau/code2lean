@@ -1,0 +1,7 @@
+=== critic  model=claude-opus-4-7  in=2580 out=237 reasoning=0 latency=5.30s ===
+VERDICT: WEAK
+REASON: The theorem only specifies that the result has the same elements as the input and is duplicate-free, but does not pin down the order. A buggy implementation that returns elements in a different order (e.g., sorted, or keeping the last occurrence's position) would satisfy this spec but not match Python's behavior of preserving the order of first occurrences.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.listUnique_correct_strong (xs : List Nat) :
+    RepoVerifyAutogen.listUnique xs =
+      xs.foldl (fun acc x => if x ∈ acc then acc else acc ++ [x]) [] := by sorry

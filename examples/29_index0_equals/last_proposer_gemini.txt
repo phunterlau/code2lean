@@ -1,0 +1,49 @@
+=== translate  model=gemini-3.1-pro-preview  in=649 out=8416 reasoning=8193 latency=68.97s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def index0Equals (xs : List Int) (x : Int) : Bool :=
+  match xs with
+  | [] => false
+  | y :: _ => y == x
+
+theorem index0Equals_correct (xs : List Int) (x : Int) :
+  index0Equals xs x = true ↔ ∃ tail, xs = x :: tail := by
+  cases xs with
+  | nil =>
+    simp [index0Equals]
+  | cons y ys =>
+    simp [index0Equals]
+    constructor
+    · intro h
+      have h_eq : y = x := eq_of_beq h
+      subst h_eq
+      exact Exists.intro ys rfl
+    · intro h
+      cases h with
+      | intro tail h_eq =>
+        injection h_eq with h_head h_tail
+        subst h_head
+        exact (beq_iff_eq).mpr rfl
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=543 out=2871 reasoning=2746 latency=24.05s ===
+```lean
+namespace RepoVerifyAutogen
+
+def index0Equals (xs : List Int) (x : Int) : Bool :=
+  match xs with
+  | [] => false
+  | y :: _ => y == x
+
+theorem index0Equals_correct (xs : List Int) (x : Int) :
+  index0Equals xs x = true ↔ ∃ tail, xs = x :: tail := by
+  cases xs with
+  | nil => simp [index0Equals]
+  | cons y ys => simp [index0Equals]
+
+end RepoVerifyAutogen
+```
+

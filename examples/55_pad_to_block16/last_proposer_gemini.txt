@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=657 out=5349 reasoning=5195 latency=43.35s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def padToBlock16 (data : List Nat) : List Nat :=
+  let padLen := 16 - (data.length % 16)
+  data ++ List.replicate padLen padLen
+
+theorem padToBlock16_correct (data : List Nat) : 
+  (padToBlock16 data).length % 16 = 0 ∧ 
+  (padToBlock16 data).length > data.length ∧ 
+  (padToBlock16 data).length - data.length ≤ 16 := by
+  unfold padToBlock16
+  simp
+  omega
+
+end RepoVerifyAutogen
+

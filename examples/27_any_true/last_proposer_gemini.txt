@@ -1,0 +1,21 @@
+=== translate  model=gemini-3.1-pro-preview  in=629 out=6807 reasoning=6687 latency=56.89s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def anyTrue : List Bool → Bool
+  | [] => false
+  | x :: xs => x || anyTrue xs
+
+theorem anyTrue_correct (xs : List Bool) : anyTrue xs = true ↔ true ∈ xs := by
+  induction xs with
+  | nil => simp [anyTrue]
+  | cons x xs ih =>
+    cases x with
+    | false => simp [anyTrue, ih]
+    | true => simp [anyTrue]
+
+end RepoVerifyAutogen
+```
+

@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=681 out=9767 reasoning=9635 latency=81.02s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def roundtripBytesNat (n : Nat) : Bool :=
+  let hi := (n / 256) % 256
+  let lo := n % 256
+  let decoded := hi * 256 + lo
+  decoded == (n % 65536)
+
+theorem roundtripBytesNat_correct (n : Nat) : roundtripBytesNat n = true := by
+  simp only [roundtripBytesNat, beq_iff_eq]
+  omega
+
+end RepoVerifyAutogen
+```
+

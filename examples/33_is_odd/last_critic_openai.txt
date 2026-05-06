@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=589 out=198 reasoning=123 latency=5.11s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes the Boolean result for every non-negative input by proving it is true exactly when `n % 2 = 1`, matching the Python implementation and docstring. Since the return type is `Bool`, this also determines the false cases.
+STRONGER_THEOREM:
+n/a

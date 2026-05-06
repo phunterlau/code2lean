@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=596 out=628 reasoning=516 latency=13.29s ===
+VERDICT: WEAK
+REASON: The theorem only proves the result is in range and agrees with the input below 128; it does not characterize outputs for inputs like 128 or 255, so many incorrect functions would satisfy it. It also models Python `int` as `Nat`, omitting negative inputs.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.maskHighBit_correct_stronger (b : Nat) : RepoVerifyAutogen.maskHighBit b = b % 128 := by sorry

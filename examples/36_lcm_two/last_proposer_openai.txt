@@ -1,0 +1,100 @@
+=== translate  model=gpt-5.5  in=652 out=4289 reasoning=4103 latency=67.39s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcdTwo (x y : Nat) : Nat :=
+  Nat.gcd x y
+
+def lcmTwo (a b : Nat) : Nat :=
+  if a = 0 ∨ b = 0 then
+    0
+  else
+    (a / gcdTwo a b) * b
+
+theorem lcmTwo_correct (a b : Nat) : lcmTwo a b = Nat.lcm a b := by
+  unfold lcmTwo gcdTwo
+  by_cases h : a = 0 ∨ b = 0
+  · cases h with
+    | inl ha =>
+        subst a
+        simp [Nat.lcm]
+    | inr hb =>
+        subst b
+        simp [Nat.lcm]
+  · simp [h, Nat.lcm]
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gpt-5.5  in=567 out=2871 reasoning=2588 latency=43.54s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcdTwo (x y : Nat) : Nat :=
+  Nat.gcd x y
+
+def lcmTwo (a b : Nat) : Nat :=
+  if a = 0 ∨ b = 0 then
+    0
+  else
+    (a / gcdTwo a b) * b
+
+theorem lcmTwo_correct (a b : Nat) : lcmTwo a b = Nat.lcm a b := by
+  unfold lcmTwo gcdTwo
+  by_cases h : a = 0 ∨ b = 0
+  · cases h with
+    | inl ha =>
+        subst a
+        simp [Nat.lcm]
+    | inr hb =>
+        subst b
+        simp [Nat.lcm]
+  · rw [if_neg h]
+    simp only [Nat.lcm]
+    calc
+      a / Nat.gcd a b * b = b * (a / Nat.gcd a b) := by
+        rw [Nat.mul_comm]
+      _ = b * a / Nat.gcd a b := by
+        exact Nat.mul_div_assoc b (Nat.gcd_dvd_left a b)
+      _ = a * b / Nat.gcd a b := by
+        rw [Nat.mul_comm b a]
+
+end RepoVerifyAutogen
+
+=== repair_1  model=gpt-5.5  in=686 out=803 reasoning=516 latency=10.58s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcdTwo (x y : Nat) : Nat :=
+  Nat.gcd x y
+
+def lcmTwo (a b : Nat) : Nat :=
+  if a = 0 ∨ b = 0 then
+    0
+  else
+    (a / gcdTwo a b) * b
+
+theorem lcmTwo_correct (a b : Nat) : lcmTwo a b = Nat.lcm a b := by
+  unfold lcmTwo gcdTwo
+  by_cases h : a = 0 ∨ b = 0
+  · cases h with
+    | inl ha =>
+        subst a
+        simp [Nat.lcm]
+    | inr hb =>
+        subst b
+        simp [Nat.lcm]
+  · rw [if_neg h]
+    simp only [Nat.lcm]
+    calc
+      a / Nat.gcd a b * b = b * (a / Nat.gcd a b) := by
+        rw [Nat.mul_comm]
+      _ = b * a / Nat.gcd a b := by
+        exact (Nat.mul_div_assoc b (Nat.gcd_dvd_left a b)).symm
+      _ = a * b / Nat.gcd a b := by
+        rw [Nat.mul_comm b a]
+
+end RepoVerifyAutogen
+

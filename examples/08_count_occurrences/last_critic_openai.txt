@@ -1,0 +1,10 @@
+=== critic  model=gpt-5.5  in=761 out=465 reasoning=337 latency=8.89s ===
+VERDICT: WEAK
+REASON: The append-additivity theorem is related to counting, but it does not characterize counting occurrences; many incorrect functions such as always returning 0 or returning xs.length also satisfy it. It omits the key specification that the result is exactly the number of elements equal to x.
+STRONGER_THEOREM:
+namespace RepoVerifyAutogen
+
+theorem countOccurrences_correct_stronger (x : Int) (xs : List Int) :
+    countOccurrences x xs = (xs.filter (fun y => y = x)).length := by sorry
+
+end RepoVerifyAutogen

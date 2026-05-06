@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=738 out=592 reasoning=516 latency=14.30s ===
+VERDICT: PASS
+REASON: The theorem gives an extensional characterization of `xorBytes` on all list inputs as `List.zipWith` with bitwise XOR, which captures both byte-by-byte XOR and truncation to the shorter input. It is not merely a boundary case or tautology.
+STRONGER_THEOREM:
+n/a

@@ -1,0 +1,14 @@
+=== translate  model=gemini-3.1-pro-preview  in=645 out=2995 reasoning=2892 latency=24.35s ===
+namespace RepoVerifyAutogen
+
+def listHeadOrDefault (xs : List Int) : Int :=
+  match xs with
+  | [] => 0
+  | x :: _ => x
+
+theorem listHeadOrDefault_correct :
+  listHeadOrDefault [] = 0 ∧ ∀ (x : Int) (xs : List Int), listHeadOrDefault (x :: xs) = x := by
+  exact ⟨rfl, fun _ _ => rfl⟩
+
+end RepoVerifyAutogen
+

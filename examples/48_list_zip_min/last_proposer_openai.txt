@@ -1,0 +1,122 @@
+=== translate  model=gpt-5.5  in=626 out=3888 reasoning=3624 latency=58.81s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listZipMin : List Int → List Int → List Int
+  | x :: xs, y :: ys => (if x < y then x else y) :: listZipMin xs ys
+  | _, _ => []
+
+private theorem if_lt_eq_min (x y : Int) :
+    (if x < y then x else y) = min x y := by
+  by_cases h : x < y
+  · rw [if_pos h]
+    exact (min_eq_left (le_of_lt h)).symm
+  · rw [if_neg h]
+    exact (min_eq_right (le_of_not_gt h)).symm
+
+theorem listZipMin_correct (xs ys : List Int) :
+    listZipMin xs ys = List.zipWith (fun x y => min x y) xs ys := by
+  induction xs generalizing ys with
+  | nil =>
+      cases ys with
+      | nil => rfl
+      | cons y ys => rfl
+  | cons x xs ih =>
+      cases ys with
+      | nil => rfl
+      | cons y ys =>
+          simp [listZipMin, ih, if_lt_eq_min]
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gpt-5.5  in=609 out=4445 reasoning=4142 latency=73.68s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listZipMin : List Int → List Int → List Int
+  | x :: xs, y :: ys => (if x < y then x else y) :: listZipMin xs ys
+  | _, _ => []
+
+private theorem if_lt_eq_min (x y : Int) :
+    (if x < y then x else y) = min x y := by
+  by_cases h : x < y
+  · rw [if_pos h]
+    rw [Int.min_def]
+    simp [le_of_lt h]
+  · rw [if_neg h]
+    rw [Int.min_def]
+    by_cases hle : x ≤ y
+    · have hxy : x = y := le_antisymm hle (le_of_not_gt h)
+      simp [hle, hxy]
+    · simp [hle]
+
+theorem listZipMin_correct (xs ys : List Int) :
+    listZipMin xs ys = List.zipWith (fun x y => min x y) xs ys := by
+  induction xs generalizing ys with
+  | nil =>
+      cases ys with
+      | nil => rfl
+      | cons y ys => rfl
+  | cons x xs ih =>
+      cases ys with
+      | nil => rfl
+      | cons y ys =>
+          simp [listZipMin, ih, if_lt_eq_min]
+
+end RepoVerifyAutogen
+
+=== repair_1  model=gpt-5.5  in=766 out=2302 reasoning=2070 latency=36.55s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listZipMin : List Int → List Int → List Int
+  | x :: xs, y :: ys => (if x < y then x else y) :: listZipMin xs ys
+  | _, _ => []
+
+private theorem if_lt_eq_min (x y : Int) :
+    (if x < y then x else y) = min x y := by
+  rw [Int.min_def]
+  split <;> split <;> try rfl <;> omega
+
+theorem listZipMin_correct (xs ys : List Int) :
+    listZipMin xs ys = List.zipWith (fun x y => min x y) xs ys := by
+  induction xs generalizing ys with
+  | nil =>
+      cases ys with
+      | nil => rfl
+      | cons y ys => rfl
+  | cons x xs ih =>
+      cases ys with
+      | nil => rfl
+      | cons y ys =>
+          simp [listZipMin, ih, if_lt_eq_min]
+
+end RepoVerifyAutogen
+
+=== repair_2  model=gpt-5.5  in=615 out=681 reasoning=516 latency=11.35s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listZipMin : List Int → List Int → List Int
+  | x :: xs, y :: ys => min x y :: listZipMin xs ys
+  | _, _ => []
+
+theorem listZipMin_correct (xs ys : List Int) :
+    listZipMin xs ys = List.zipWith (fun x y => min x y) xs ys := by
+  induction xs generalizing ys with
+  | nil =>
+      cases ys with
+      | nil => rfl
+      | cons y ys => rfl
+  | cons x xs ih =>
+      cases ys with
+      | nil => rfl
+      | cons y ys =>
+          simp [listZipMin, ih]
+
+end RepoVerifyAutogen
+

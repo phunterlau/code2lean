@@ -1,0 +1,707 @@
+=== translate  model=claude-opus-4-7  in=940 out=8192 reasoning=0 latency=80.72s ===
+<think>
+We need to define isPowerOfTwo : Nat → Bool (Python takes int, but power of two only matters for positive; negative inputs would loop forever in Python actually... wait, for n=-2, n%2==0 in Python, n//2 = -1, then -1%2 = 1, returns False. But let's use Nat since docstring says positive power of two).
+
+Actually Python int could be negative. But the spec says "positive power of two". Let me use Nat for simplicity.
+
+Define recursively. We need termination. The function: if n=0 return false, else while n%2==0, n//=2, then return n==1.
+
+Recursive version:
+```
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+```
+
+Termination: n/2 < n when n ≥ 2.
+
+Theorem: isPowerOfTwo n = true ↔ ∃ k, n = 2^k.
+
+Let me prove this. 
+
+Forward: by strong induction. If n=0, false, contradiction. If n=1, then 2^0=1. If n%2=0 and n≥2, recurse, get n/2 = 2^k, so n = 2^(k+1).
+
+Backward: if n = 2^k, then if k=0, n=1, returns true. Else n=2^k, n%2=0, n/2=2^(k-1), apply IH.
+
+Let me write this carefully.
+
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+termination_by n
+decreasing_by
+  simp_wf
+  omega
+```
+
+Hmm, need to make sure termination works. n/2 < n when n ≥ 2, and we have n ≠ 0, n ≠ 1, so n ≥ 2.
+
+Theorem:
+```
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k
+```
+
+Proof by strong induction on n.
+
+Let me write it:
+
+```lean
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    unfold isPowerOfTwo
+    split
+    · -- n = 0
+      simp
+      intro k
+      rename_i hn
+      subst hn
+      exact Nat.pos_iff_ne_zero.mpr (Nat.pow_pos (by decide) k) |>.symm
+      -- Hmm, 2^k > 0 so 2^k ≠ 0
+    sorry
+```
+
+This is getting complex. Let me think more carefully.
+
+Actually for n = 0: we need to show `false = true ↔ ∃ k, 0 = 2^k`. False on left, and right is also false since 2^k ≥ 1.
+
+For n = 1: `true = true ↔ ∃ k, 1 = 2^k`. Take k=0.
+
+For n ≥ 2:
+- Case n%2 = 0: result is isPowerOfTwo (n/2). Need: (∃ k, n/2 = 2^k) ↔ (∃ k, n = 2^k).
+  - n%2=0 means n = 2*(n/2). So n = 2^(k+1) iff n/2 = 2^k.
+- Case n%2 ≠ 0: result false. Need: ∃ k, n = 2^k → False. If n = 2^k with k ≥ 1, then n%2 = 0. If k=0, n=1, but n ≥ 2.
+
+Let me write it out more carefully:
+
+```lean
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    rw [isPowerOfTwo]
+    by_cases h0 : n = 0
+    · subst h0
+      simp
+      intro k
+      have : 2^k ≥ 1 := Nat.one_le_iff_ne_zero.mpr (Nat.pow_pos (by decide) k).ne'
+      omega
+    by_cases h1 : n = 1
+    · subst h1
+      simp
+      exact ⟨0, rfl⟩
+    -- n ≥ 2
+    simp [h0, h1]
+    by_cases h2 : n % 2 = 0
+    · simp [h2]
+      have hlt : n / 2 < n := by omega
+      rw [ih (n/2) hlt]
+      constructor
+      · rintro ⟨k, hk⟩
+        refine ⟨k+1, ?_⟩
+        have : n = 2 * (n/2) := by omega
+        rw [this, hk]
+        ring
+      · rintro ⟨k, hk⟩
+        cases k with
+        | zero => simp at hk; omega
+        | succ k =>
+          refine ⟨k, ?_⟩
+          have : n = 2 * (n/2) := by omega
+          rw [pow_succ] at hk
+          omega
+    · simp [h2]
+      rintro ⟨k, hk⟩
+      cases k with
+      | zero => simp at hk; omega
+      | succ k =>
+        rw [pow_succ] at hk
+        omega
+```
+
+Hmm, `ring` might not work for Nat in Lean 4 std. Let me use Nat.pow_succ or similar.
+
+Actually `2^(k+1) = 2 * 2^k` is `Nat.pow_succ` perhaps `pow_succ`. In core Lean 4: `Nat.pow_succ : n^(m+1) = n^m * n`. So `2^(k+1) = 2^k * 2`.
+
+Let me rework. We have hk : n/2 = 2^k. Want: n = 2^(k+1) = 2^k * 2 = (n/2) * 2.
+Since n%2 = 0, n = 2 * (n/2) = (n/2) * 2.
+
+```
+refine ⟨k+1, ?_⟩
+rw [Nat.pow_succ, ← hk]
+omega
+```
+
+For backward direction: hk : n = 2^(k+1), we want n/2 = 2^k.
+n = 2^k * 2, so n/2 = 2^k.
+
+Let me be careful with imports. Using only Std, do we have Nat.pow_succ? Yes, it's in core.
+
+Let me also check: `Nat.pow_pos` might not exist. Let me use a different approach:
+`2^k ≥ 1`: induction or `Nat.one_le_two_pow`. Actually `Nat.two_pow_pos` exists or `Nat.pos_pow_of_pos`.
+
+Simpler: just prove inline.
+
+```
+have : 2^k > 0 := by
+  induction k with
+  | zero => decide
+  | succ k ih => rw [Nat.pow_succ]; omega
+```
+
+Let me write the full proof:
+
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+termination_by n
+decreasing_by
+  simp_wf
+  omega
+
+lemma two_pow_pos (k : Nat) : 0 < 2^k := by
+  induction k with
+  | zero => decide
+  | succ k ih => rw [Nat.pow_succ]; omega
+
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    unfold isPowerOfTwo
+    by_cases h0 : n = 0
+    · subst h0
+      simp
+      intro k
+      have := two_pow_pos k
+      omega
+    by_cases h1 : n = 1
+    · subst h1
+      simp
+      exact ⟨0, rfl⟩
+    simp [h0, h1]
+    by_cases h2 : n % 2 = 0
+    · simp [h2]
+      have hlt : n / 2 < n := by omega
+      rw [ih (n/2) hlt]
+      constructor
+      · rintro ⟨k, hk⟩
+        refine ⟨k+1, ?_⟩
+        rw [Nat.pow_succ, ← hk]
+        omega
+      · rintro ⟨k, hk⟩
+        cases k with
+        | zero =>
+          simp [Nat.pow_zero] at hk
+          omega
+        | succ k =>
+          refine ⟨k, ?_⟩
+          rw [Nat.pow_succ] at hk
+          omega
+    · simp [h2]
+      rintro ⟨k, hk⟩
+      cases k with
+      | zero =>
+        simp [Nat.pow_zero] at hk
+        omega
+      | succ k =>
+        rw [Nat.pow_succ] at hk
+        omega
+```
+
+Wait, in the recursive case, after `simp [h0, h1]`, the goal might become something with the `if-then-else` resolved. Let me think about what `unfold` then `simp` produces.
+
+Actually, instead of unfold, after writing the function with `if`, when we have `h0 : n ≠ 0` and `h1 : n ≠ 1`, the if statements should reduce. Let me use `rw [isPowerOfTwo]` then handle each `if`.
+
+Actually `unfold isPowerOfTwo` might unfold recursively. Better to use:
+```
+show (if n = 0 then false else ...) = true ↔ _
+```
+
+Hmm, let me rely on `simp only` with the def unfolded once. Or use `rw [show isPowerOfTwo n = ... from rfl]`. Actually for `if-then-else` based functions, `unfold` once should work.
+
+Let me try a cleaner approach with `match`:
+
+Actually the issue is that with `termination_by`, the equation lemma might not just unfold to the body. Let's use `isPowerOfTwo.eq_def` or just careful steps.
+
+Let me try:
+
+```
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    by_cases h0 : n = 0
+    · subst h0
+      constructor
+      · intro h; simp [isPowerOfTwo] at h
+      · rintro ⟨k, hk⟩
+        have := two_pow_pos k; omega
+    by_cases h1 : n = 1
+    · subst h1
+      constructor
+      · intro _; exact ⟨0, rfl⟩
+      · intro _; rfl  -- isPowerOfTwo 1 = true by definition
+    -- Need: isPowerOfTwo 1 reduces to true. Let's see.
+    sorry
+```
+
+Hmm, `isPowerOfTwo 1 = true` should reduce: `if 1=0 then false else if 1=1 then true ...` = true. By `rfl`? Maybe yes since these are decidable.
+
+Actually for `decide`-able conditions in `if`, `rfl` should work. Let me test mentally: `if 1 = 0 then ...` — `1 = 0` is `Nat.succ 0 = 0` which is decidable. The `if` reduces only if the condition reduces. With `Decidable`, it might not be definitionally equal to the branch even when condition is true; depends on how `ite` is defined. In Lean 4, `ite` reduces when the decidability instance is `Decidable.isTrue` or `isFalse` and we can compute. So `decide` should work, `rfl` might or might not.
+
+Let me just use `decide` for the base cases and explicit unfolding for recursive case.
+
+Actually, let me reconsider. There's a subtlety: after the function definition, Lean generates equation lemmas. We can reference `isPowerOfTwo.eq_1`, etc., or use `isPowerOfTwo` in `simp`.
+
+Let me write the proof more robustly:
+
+```lean
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    rw [isPowerOfTwo]
+    split
+    · -- n = 0
+      rename_i h0
+      subst h0
+      simp
+      intro k
+      have := two_pow_pos k; omega
+    rename_i h0
+    split
+    · -- n = 1
+      rename_i h1
+      subst h1
+      simp
+      exact ⟨0, rfl⟩
+    rename_i h1
+    split
+    · -- n % 2 = 0
+      rename_i h2
+      have hlt : n / 2 < n := by
+        have : n ≥ 2 := by omega
+        omega
+      rw [ih (n/2) hlt]
+      constructor
+      · rintro ⟨k, hk⟩
+        refine ⟨k+1, ?_⟩
+        rw [Nat.pow_succ, ← hk]
+        omega
+      · rintro ⟨k, hk⟩
+        cases k with
+        | zero =>
+          simp at hk; omega
+        | succ k =>
+          refine ⟨k, ?_⟩
+          rw [Nat.pow_succ] at hk
+          omega
+    · -- n % 2 ≠ 0
+      rename_i h2
+      simp
+      rintro ⟨k, hk⟩
+      cases k with
+      | zero =>
+        simp at hk; omega
+      | succ k =>
+        rw [Nat.pow_succ] at hk
+        omega
+```
+
+This `rw [isPowerOfTwo]` might not work because of recursion. Let me try `conv_lhs => rw [isPowerOfTwo]` or use the unfolding.
+
+Actually with Lean 4, for definitions with `termination_by`, the equational unfolding should work via `simp only [isPowerOfTwo]` or `unfold isPowerOfTwo` for one step... but `unfold` might unfold all occurrences. Let me try.
+
+Alternative: write as recursion directly with WellFoundedRecursion, but that's cumbersome.
+
+Let me think differently. Use Nat.rec with strong induction.
+
+Actually, let me just try `show`:
+
+```
+show (isPowerOfTwo n = true) ↔ _
+```
+
+Then in case n = 0, `isPowerOfTwo 0 = false` should be true by computation.
+
+Let me restructure to compute base cases:
+
+```lean
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    by_cases h0 : n = 0
+    · subst h0
+      simp only [show isPowerOfTwo 0 = false from rfl]
+      simp
+      intro k
+      have := two_pow_pos k; omega
+    by_cases h1 : n = 1
+    · subst h1
+      simp only [show isPowerOfTwo 1 = true from rfl]
+      simp
+      exact ⟨0, rfl⟩
+    have hge : n ≥ 2 := by omega
+    by_cases h2 : n % 2 = 0
+    · have heq : isPowerOfTwo n = isPowerOfTwo (n/2) := by
+        conv_lhs => rw [isPowerOfTwo]
+        simp [h0, h1, h2]
+      rw [heq]
+      have hlt : n / 2 < n := by omega
+      rw [ih (n/2) hlt]
+      constructor
+      · rintro ⟨k, hk⟩
+        refine ⟨k+1, ?_⟩
+        rw [Nat.pow_succ, ← hk]
+        omega
+      · rintro ⟨k, hk⟩
+        cases k with
+        | zero =>
+          simp at hk; omega
+        | succ k =>
+          refine ⟨k, ?_⟩
+          rw [Nat.pow_succ] at hk
+          omega
+    · have heq : isPowerOfTwo n = false := by
+        conv_lhs => rw [isPowerOfTwo]
+        simp [h0, h1, h2]
+      rw [heq]
+      simp
+      rintro ⟨k, hk⟩
+      cases k with
+      | zero =>
+        simp at hk; omega
+      | succ k =>
+        rw [Nat.pow_succ] at hk
+        omega
+```
+
+The `show isPowerOfTwo 0 = false from rfl` — does that work? `isPowerOfTwo 0` unfolds to `if 0 = 0 then false else ...`. The `if` reduces because `0 = 0` decides to true. So yes, `rfl` should work. Similarly for `isPowerOfTwo 1`.
+
+For `conv_lhs => rw [isPowerOfTwo]`: this rewrites using the equation lemma. Then `simp [h0, h1, h2]` to simplify the ifs.
+
+Hmm `h0 : ¬ n = 0` would simplify `if n = 0 then ... else X` to X.
+
+Let me check `simp` works with `h0 : ¬ n = 0`. Yes, `if_neg h0` or simp should handle.
+
+Let me also worry: does `rw [isPowerOfTwo]` work? It depends on the definition's equation lemma. In Lean 4 with `if-then-else`, the equation lemma is just the body. Should be fine.
+
+Actually wait — `rw [isPowerOfTwo]` in conv mode might not work directly. We might need `rw [show isPowerOfTwo n = (if n = 0 ...) from rfl]` if the equation is by rfl.
+
+Hmm, actually for definitions with `termination_by` (well-founded recursion), the unfolding is NOT by rfl. So `rfl` won't work for that. But `simp [isPowerOfTwo]` should rewrite using the equation lemma.
+
+Let me try yet another approach: just use `unfold isPowerOfTwo` or `rw [isPowerOfTwo]` and trust that it works.
+
+Let me write the final version:
+
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+termination_by n
+decreasing_by
+  simp_wf
+  omega
+
+lemma two_pow_pos (k : Nat) : 0 < 2^k := by
+  induction k with
+  | zero => decide
+  | succ k ih => rw [Nat.pow_succ]; omega
+
+theorem isPowerOfTwo_correct (n : Nat) : isPowerOfTwo n = true ↔ ∃ k, n = 2^k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    by_cases h0 : n = 0
+    · subst h0
+      constructor
+      · intro h
+        unfold isPowerOfTwo at h
+        simp at h
+      · rintro ⟨k, hk⟩
+        have := two_pow_pos k; omega
+    by_cases h1 : n = 1
+    · subst h1
+      refine ⟨fun _ => ⟨0, rfl⟩, fun _ => ?_⟩
+      unfold isPowerOfTwo
+      simp
+    by_cases h2 : n % 2 = 0
+    · have heq : isPowerOfTwo n = isPowerOfTwo (n/2) := by
+        unfold isPowerOfTwo
+        simp [h0, h1, h2]
+      rw [heq]
+      have hlt : n / 2 < n := by omega
+      rw [ih (n/2) hlt]
+      constructor
+      · rintro ⟨k, hk⟩
+        refine ⟨k+1, ?_⟩
+        rw [Nat.pow_succ, ← hk]
+        omega
+      · rintro ⟨k, hk⟩
+        cases k with
+        | zero =>
+          simp at hk; omega
+        | succ k =>
+          refine ⟨k, ?_⟩
+          rw [Nat.pow_succ] at hk
+          omega
+    · have heq : isPowerOfTwo n = false := by
+        unfold isPowerOfTwo
+        simp [h0, h1, h2]
+      rw [heq]
+      constructor
+      · intro h; exact absurd h (by simp)
+      · rintro ⟨k, hk⟩
+        cases k with
+        | zero =>
+          simp at hk; omega
+        | succ k =>
+          rw [Nat.pow_succ] at hk
+          omega
+```
+
+Concern: `unfold isPowerOfTwo` may unfold recursively. In Lean 4, `unfold` for well-founded recursion unfolds once using the equation lemma. Should be fine.
+
+Another concern: `simp [h0, h1, h2]` after unfold — the unfolded form has `if n = 0 then ... else if n = 1 then ... else if n % 2 = 0 then ...`. With h0: ¬ n = 0, h1: ¬ n = 1, h2: n % 2 = 0, the simp should rewrite the ifs.
+
+Actually `simp` knows `if c then a else b = b` if `¬c`, and similar. With hypotheses in scope as `simp [...]`, it should work.
+
+Hmm but `h0 : ¬ n = 0` and we have `if n = 0 then ...`. Does simp use h0? Yes, `simp [h0]` uses h0 as a rewrite rule. `h0 : ¬ n = 0` becomes `n = 0 ↔ False`, then if becomes else branch.
+
+Let me also handle: in case h1, after `subst h1`, `unfold isPowerOfTwo`. Then the body is `if 1 = 0 then false else if 1 = 1 then true else ...`. After simp, this is `true`. Then proving `true = true`, done by `simp` or `rfl`.
+
+Actually `unfold isPowerOfTwo; simp` should reduce to `True` for the goal `isPowerOfTwo 1 = true`.
+
+I think the proof is mostly correct. Let me also double-check `Nat.pow_succ`: in core Lean 4, `Nat.pow_succ : ∀ (b n : ℕ), b ^ (n + 1) = b ^ n * b`. Yes.
+
+`simp at hk` where `hk : 1 = 2^0`: `2^0 = 1`, so `hk : 1 = 1`, which simp closes? Or makes it `True`? Then `omega` shouldn't need it. Actually we have `hk : n = 2^0` (in the false case, for `succ`'s zero subcase, after recursive case n/2 = 2^0 so n/2 = 1, then n = 2). Wait let me re-examine.
+
+In the recursive case, backward direction: `hk : n = 2^k`, want to show ∃ k', n/2 = 2^k'. 
+- If k = 0: hk : n = 1, but we have h1: n ≠ 1. Contradiction.
+- If k = succ k': n = 2^(k'+1) = 2^k' * 2, so n/2 = 2^k'.
+
+After `simp at hk` for k=0: hk goes from `n = 2^0` to `n = 1`. Then `omega` with h1 : n ≠ 1 gives contradiction. Good.
+
+For the n%2 ≠ 0 case, hk : n = 2^k:
+- k = 0: hk : n = 1, contradicts h1.
+- k = succ k': hk : n = 2^k' * 2, so n is even, contradicts h2.
+
+For `omega` to use this, we need hk in form omega can handle. `n = 2^k' * 2` — omega can handle since 2^k' is just some natural, but it doesn't know `2^k' * 2` is even... actually omega handles linear arithmetic, but `2^k' * 2` has a product. Hmm. Let me reformulate.
+
+Actually if `hk : n = 2^k' * 2`, then `n % 2 = 0` follows. We can
+
+=== repair_0  model=claude-opus-4-7  in=594 out=734 reasoning=0 latency=8.82s ===
+namespace RepoVerifyAutogen
+
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+
+theorem isPowerOfTwo_correct (n : Nat) :
+    isPowerOfTwo n = true ↔ ∃ k : Nat, n = 2 ^ k := by
+  induction n using isPowerOfTwo.induct with
+  | case1 h =>
+    subst h
+    simp [isPowerOfTwo]
+    intro k hk
+    cases k with
+    | zero => simp at hk
+    | succ m =>
+      rw [Nat.pow_succ] at hk
+      omega
+  | case2 h1 h2 =>
+    subst h2
+    simp [isPowerOfTwo]
+    exact ⟨0, rfl⟩
+  | case3 h1 h2 h3 ih =>
+    rw [isPowerOfTwo]
+    simp [h1, h2, h3, ih]
+    constructor
+    · rintro ⟨k, hk⟩
+      refine ⟨k + 1, ?_⟩
+      rw [Nat.pow_succ]
+      have h2eq : n = 2 * (n / 2) := by
+        have := Nat.div_add_mod n 2
+        omega
+      rw [h2eq, hk]
+      ring
+    · rintro ⟨k, hk⟩
+      cases k with
+      | zero => simp at hk; exact absurd hk h2
+      | succ m =>
+        refine ⟨m, ?_⟩
+        rw [Nat.pow_succ] at hk
+        rw [hk]
+        rw [Nat.mul_div_cancel_left _ (by norm_num : (2:Nat) > 0)]
+  | case4 h1 h2 h3 =>
+    rw [isPowerOfTwo]
+    simp [h1, h2, h3]
+    intro k hk
+    cases k with
+    | zero => simp at hk; exact h2 hk
+    | succ m =>
+      rw [Nat.pow_succ] at hk
+      omega
+
+end RepoVerifyAutogen
+
+=== repair_1  model=claude-opus-4-7  in=1763 out=909 reasoning=0 latency=9.15s ===
+<think>
+The function needs to be a recursive one. Let me use `decreasing_by` or make it terminate. Actually, Lean might infer termination. Let me check - `n / 2 < n` when n ≥ 2, but we need to prove this. Let me add termination.
+
+Actually, since we have `n ≠ 0`, n/2 < n. Let me write it carefully.
+
+Let me restructure with explicit termination and a cleaner proof using strong induction.
+</think>
+
+```
+namespace RepoVerifyAutogen
+
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+decreasing_by
+  simp_wf
+  omega
+
+theorem isPowerOfTwo_correct (n : Nat) :
+    isPowerOfTwo n = true ↔ ∃ k : Nat, n = 2 ^ k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    rw [isPowerOfTwo]
+    by_cases h0 : n = 0
+    · subst h0
+      simp
+      intro k hk
+      cases k with
+      | zero => simp at hk
+      | succ m =>
+        rw [Nat.pow_succ] at hk
+        omega
+    · simp [h0]
+      by_cases h1 : n = 1
+      · subst h1
+        simp
+        exact ⟨0, rfl⟩
+      · simp [h1]
+        by_cases h2 : n % 2 = 0
+        · simp [h2]
+          have hlt : n / 2 < n := by omega
+          rw [ih (n / 2) hlt]
+          constructor
+          · rintro ⟨k, hk⟩
+            refine ⟨k + 1, ?_⟩
+            rw [Nat.pow_succ]
+            have h2eq : n = 2 * (n / 2) := by
+              have := Nat.div_add_mod n 2
+              omega
+            rw [h2eq, hk]
+            ring
+          · rintro ⟨k, hk⟩
+            cases k with
+            | zero => simp at hk; exact absurd hk h1
+            | succ m =>
+              refine ⟨m, ?_⟩
+              rw [Nat.pow_succ] at hk
+              have h2eq : n = 2 * (n / 2) := by
+                have := Nat.div_add_mod n 2
+                omega
+              omega
+        · simp [h2]
+          intro k hk
+          cases k with
+          | zero => simp at hk; exact h1 hk
+          | succ m =>
+            rw [Nat.pow_succ] at hk
+            omega
+
+end RepoVerifyAutogen
+```
+
+=== repair_2  model=claude-opus-4-7  in=1238 out=753 reasoning=0 latency=5.82s ===
+namespace RepoVerifyAutogen
+
+def isPowerOfTwo (n : Nat) : Bool :=
+  if n = 0 then false
+  else if n = 1 then true
+  else if n % 2 = 0 then isPowerOfTwo (n / 2)
+  else false
+decreasing_by
+  simp_wf
+  omega
+
+theorem isPowerOfTwo_correct (n : Nat) :
+    isPowerOfTwo n = true ↔ ∃ k : Nat, n = 2 ^ k := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    rw [isPowerOfTwo]
+    by_cases h0 : n = 0
+    · subst h0
+      simp
+      intro k hk
+      cases k with
+      | zero => simp at hk
+      | succ m =>
+        rw [Nat.pow_succ] at hk
+        omega
+    · simp [h0]
+      by_cases h1 : n = 1
+      · subst h1
+        simp
+        exact ⟨0, rfl⟩
+      · simp [h1]
+        by_cases h2 : n % 2 = 0
+        · simp [h2]
+          have hlt : n / 2 < n := by omega
+          rw [ih (n / 2) hlt]
+          constructor
+          · rintro ⟨k, hk⟩
+            refine ⟨k + 1, ?_⟩
+            rw [Nat.pow_succ]
+            have h2eq : n = 2 * (n / 2) := by
+              have := Nat.div_add_mod n 2
+              omega
+            rw [h2eq, hk]
+            ring
+          · rintro ⟨k, hk⟩
+            cases k with
+            | zero => simp at hk; exact absurd hk h1
+            | succ m =>
+              refine ⟨m, ?_⟩
+              rw [Nat.pow_succ] at hk
+              have h2eq : n = 2 * (n / 2) := by
+                have := Nat.div_add_mod n 2
+                omega
+              omega
+        · simp [h2]
+          intro k hk
+          cases k with
+          | zero => simp at hk; exact h1 hk
+          | succ m =>
+            rw [Nat.pow_succ] at hk
+            omega
+
+end RepoVerifyAutogen
+

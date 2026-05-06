@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=624 out=1975 reasoning=1855 latency=17.18s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def boolImplies (a b : Bool) : Bool :=
+  if a then b else true
+
+theorem boolImplies_correct (a b : Bool) : boolImplies a b = true ↔ (a = true → b = true) := by
+  cases a
+  · cases b
+    · simp [boolImplies]
+    · simp [boolImplies]
+  · cases b
+    · simp [boolImplies]
+    · simp [boolImplies]
+
+end RepoVerifyAutogen
+

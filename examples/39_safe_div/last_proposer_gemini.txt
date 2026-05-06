@@ -1,0 +1,20 @@
+=== translate  model=gemini-3.1-pro-preview  in=642 out=8240 reasoning=8117 latency=67.71s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def safeDiv (a b : Nat) : Option Nat :=
+  if b = 0 then
+    none
+  else
+    some (a / b)
+
+theorem safeDiv_correct (a b : Nat) :
+  (b = 0 ↔ safeDiv a b = none) ∧
+  (b ≠ 0 ↔ safeDiv a b = some (a / b)) := by
+  cases b
+  · simp [safeDiv]
+  · simp [safeDiv]
+
+end RepoVerifyAutogen
+

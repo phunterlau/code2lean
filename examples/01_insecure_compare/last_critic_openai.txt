@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=908 out=384 reasoning=304 latency=10.86s ===
+VERDICT: PASS
+REASON: The theorem states that the function returns true exactly when the two input lists are equal, which fully characterizes the Boolean equality behavior promised by the Python docstring. The List Nat representation is broader than bytes, but the theorem is still a strong extensional correctness statement for the translated function.
+STRONGER_THEOREM:
+n/a

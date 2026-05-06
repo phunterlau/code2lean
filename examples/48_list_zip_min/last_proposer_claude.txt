@@ -1,0 +1,27 @@
+=== translate  model=claude-opus-4-7  in=974 out=321 reasoning=0 latency=5.94s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listZipMin : List Int → List Int → List Int
+  | [], _ => []
+  | _, [] => []
+  | x :: xs, y :: ys =>
+      (if x < y then x else y) :: listZipMin xs ys
+
+theorem listZipMin_length (xs ys : List Int) :
+    (listZipMin xs ys).length = min xs.length ys.length := by
+  induction xs generalizing ys with
+  | nil => simp [listZipMin]
+  | cons x xs ih =>
+    cases ys with
+    | nil => simp [listZipMin]
+    | cons y ys =>
+      simp [listZipMin, ih ys, Nat.succ_min_succ]
+
+theorem listZipMin_correct (xs ys : List Int) :
+    (listZipMin xs ys).length = min xs.length ys.length :=
+  listZipMin_length xs ys
+
+end RepoVerifyAutogen
+

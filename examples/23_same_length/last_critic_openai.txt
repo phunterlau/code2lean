@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=603 out=158 reasoning=89 latency=4.13s ===
+VERDICT: PASS
+REASON: The theorem exactly characterizes the returned Boolean as true iff the two inputs have equal lengths, matching the Python function's specified behavior. Although bytes are modeled as lists of Nat, the element type is irrelevant because only length is inspected.
+STRONGER_THEOREM:
+n/a

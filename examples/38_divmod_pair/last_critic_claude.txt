@@ -1,0 +1,5 @@
+=== critic  model=claude-opus-4-7  in=1405 out=138 reasoning=0 latency=3.76s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes divmodPair: in the b=0 case it pins down the exact tuple (0,a), and in the b≠0 case it pins it down to (pythonFloorDiv a b, pythonModulo a b), which is the function's definition. This is essentially as strong as it can be given the helper definitions.
+STRONGER_THEOREM:
+n/a

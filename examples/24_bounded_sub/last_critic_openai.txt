@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=632 out=276 reasoning=214 latency=6.02s ===
+VERDICT: PASS
+REASON: For Nat inputs, Lean’s `a - b` is truncated subtraction, returning 0 when `a < b`, so the theorem fully characterizes the intended Python behavior for non-negative inputs.
+STRONGER_THEOREM:
+n/a

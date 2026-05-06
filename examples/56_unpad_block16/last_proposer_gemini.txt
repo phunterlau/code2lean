@@ -1,0 +1,117 @@
+=== translate  model=gemini-3.1-pro-preview  in=678 out=18565 reasoning=18192 latency=146.86s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def unpadBlock16 (data : List Nat) : List Nat :=
+  if data.length = 0 then
+    []
+  else if (data.getLast?).getD 0 = 0 ∨ (data.getLast?).getD 0 > data.length then
+    data
+  else
+    data.take (data.length - (data.getLast?).getD 0)
+
+theorem length_take_le_l (n : Nat) (l : List Nat) : (l.take n).length ≤ l.length := by
+  revert n
+  induction l with
+  | nil =>
+    intro n
+    cases n with
+    | zero => exact Nat.zero_le _
+    | succ _ => exact Nat.zero_le _
+  | cons _ as ih =>
+    intro n
+    cases n with
+    | zero => exact Nat.zero_le _
+    | succ m =>
+      simp [List.take]
+      have h := ih m
+      omega
+
+theorem unpadBlock16_correct (data : List Nat) :
+    (unpadBlock16 data).length ≤ data.length := by
+  unfold unpadBlock16
+  by_cases h1 : data.length = 0
+  · simp [h1]
+  · simp [h1]
+    by_cases h2 : (data.getLast?).getD 0 = 0 ∨ (data.getLast?).getD 0 > data.length
+    · simp [h2]
+    · simp [h2]
+      exact length_take_le_l _ _
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=740 out=13436 reasoning=13142 latency=108.33s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def unpadBlock16 (data : List Nat) : List Nat :=
+  if data.length = 0 then
+    []
+  else if (data.getLast?).getD 0 = 0 ∨ (data.getLast?).getD 0 > data.length then
+    data
+  else
+    data.take (data.length - (data.getLast?).getD 0)
+
+theorem length_take_le_l (n : Nat) (l : List Nat) : (l.take n).length ≤ l.length := by
+  revert n
+  induction l with
+  | nil =>
+    intro n
+    exact Nat.zero_le _
+  | cons hd tl ih =>
+    intro n
+    cases n with
+    | zero => exact Nat.zero_le _
+    | succ m => exact Nat.succ_le_succ (ih m)
+
+theorem unpadBlock16_correct (data : List Nat) :
+    (unpadBlock16 data).length ≤ data.length := by
+  unfold unpadBlock16
+  split
+  · exact Nat.zero_le _
+  · split
+    · exact Nat.le_refl _
+    · exact length_take_le_l _ _
+
+end RepoVerifyAutogen
+
+=== repair_1  model=gemini-3.1-pro-preview  in=695 out=4260 reasoning=3961 latency=34.97s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def unpadBlock16 (data : List Nat) : List Nat :=
+  if data.length = 0 then
+    []
+  else if (data.getLast?).getD 0 = 0 ∨ (data.getLast?).getD 0 > data.length then
+    data
+  else
+    data.take (data.length - (data.getLast?).getD 0)
+
+theorem length_take_le_l (n : Nat) (l : List Nat) : (l.take n).length ≤ l.length := by
+  revert l
+  induction n with
+  | zero =>
+    intro l
+    exact Nat.zero_le _
+  | succ n ih =>
+    intro l
+    cases l with
+    | nil => exact Nat.zero_le _
+    | cons hd tl => exact Nat.succ_le_succ (ih tl)
+
+theorem unpadBlock16_correct (data : List Nat) :
+    (unpadBlock16 data).length ≤ data.length := by
+  unfold unpadBlock16
+  split
+  · exact Nat.zero_le _
+  · split
+    · exact Nat.le_refl _
+    · exact length_take_le_l _ _
+
+end RepoVerifyAutogen
+```
+

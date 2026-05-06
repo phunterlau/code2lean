@@ -1,0 +1,9 @@
+=== critic  model=gpt-5.5  in=769 out=678 reasoning=516 latency=11.25s ===
+VERDICT: WEAK
+REASON: The theorem proves only coarse length properties and does not characterize that the original data is preserved as a prefix or that every added byte equals the padding length. Many incorrect implementations with the same output length behavior would satisfy it.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.padToBlock16_correct_strong (data : List Nat) :
+  let padLen := 16 - (data.length % 16)
+  RepoVerifyAutogen.padToBlock16 data = data ++ List.replicate padLen padLen ∧
+  1 ≤ padLen ∧ padLen ≤ 16 ∧
+  (RepoVerifyAutogen.padToBlock16 data).length % 16 = 0 := by sorry

@@ -1,0 +1,15 @@
+=== translate  model=gpt-5.5  in=605 out=1137 reasoning=1034 latency=21.78s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listFilterEven (xs : List Nat) : List Nat :=
+  xs.filter (fun x => x % 2 == 0)
+
+theorem listFilterEven_correct (xs : List Nat) (x : Nat) :
+    x ∈ listFilterEven xs ↔ x ∈ xs ∧ x % 2 = 0 := by
+  unfold listFilterEven
+  simp
+
+end RepoVerifyAutogen
+

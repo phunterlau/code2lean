@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=1449 out=644 reasoning=516 latency=12.02s ===
+VERDICT: WEAK
+REASON: The theorem fully characterizes the Lean `Nat` function, but the Python function is specified on `int` and must return `False` for negative inputs. Since the Lean function has type `Nat → Bool`, the theorem cannot pin down behavior on all Python inputs.
+STRONGER_THEOREM:
+theorem isPowerOfTwo_correct_int (z : Int) : (if z < 0 then false else isPowerOfTwo z.toNat) = true ↔ ∃ k : Nat, z = (2 : Int)^k := by sorry

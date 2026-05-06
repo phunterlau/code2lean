@@ -1,0 +1,21 @@
+=== translate  model=gemini-3.1-pro-preview  in=628 out=3600 reasoning=3474 latency=30.04s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def min2 (a b : Nat) : Nat :=
+  if a < b then
+    a
+  else
+    b
+
+theorem min2_correct (a b : Nat) : min2 a b ≤ a ∧ min2 a b ≤ b ∧ (min2 a b = a ∨ min2 a b = b) := by
+  unfold min2
+  by_cases h : a < b
+  · simp [h]
+    omega
+  · simp [h]
+    omega
+
+end RepoVerifyAutogen
+

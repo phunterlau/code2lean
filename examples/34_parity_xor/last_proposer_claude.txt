@@ -1,0 +1,15 @@
+=== translate  model=claude-opus-4-7  in=909 out=135 reasoning=0 latency=2.49s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def parityXor (a b : Int) : Bool :=
+  decide (a % 2 ≠ b % 2)
+
+theorem parityXor_correct (a b : Int) :
+    parityXor a b = true ↔ a % 2 ≠ b % 2 := by
+  unfold parityXor
+  simp
+
+end RepoVerifyAutogen
+

@@ -1,0 +1,5 @@
+=== critic  model=claude-opus-4-7  in=1136 out=126 reasoning=0 latency=3.13s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes powModSmall: for m=0 it returns 0, for b=0 it returns 1, and otherwise a^b % m, which matches the Python semantics (including a^0 = 1 even when m=1, since Python's loop returns acc=1 without modding).
+STRONGER_THEOREM:
+n/a

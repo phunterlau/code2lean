@@ -1,0 +1,6 @@
+=== critic  model=gpt-5.5  in=1372 out=568 reasoning=470 latency=10.34s ===
+VERDICT: WEAK
+REASON: The theorem only proves that applying reverseList twice returns the original list, which is true for many non-reversal functions such as the identity function. It does not directly state that reverseList xs is the actual reversal of xs.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.reverseList_eq_reverse (xs : List Int) :
+  RepoVerifyAutogen.reverseList xs = xs.reverse := by sorry

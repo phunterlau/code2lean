@@ -1,0 +1,28 @@
+=== translate  model=gemini-3.1-pro-preview  in=649 out=15628 reasoning=15444 latency=127.61s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+@[simp]
+def countOccurrences (x : Int) (xs : List Int) : Nat :=
+  match xs with
+  | [] => 0
+  | y :: ys => if y = x then 1 + countOccurrences x ys else countOccurrences x ys
+
+theorem countOccurrences_correct (x : Int) (xs ys : List Int) :
+  countOccurrences x (xs ++ ys) = countOccurrences x xs + countOccurrences x ys := by
+  induction xs with
+  | nil => simp
+  | cons z zs ih =>
+    simp
+    by_cases h : z = x
+    · simp [h]
+      rw [ih]
+      omega
+    · simp [h]
+      exact ih
+
+end RepoVerifyAutogen
+```
+

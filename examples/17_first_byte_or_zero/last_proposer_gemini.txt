@@ -1,0 +1,18 @@
+=== translate  model=gemini-3.1-pro-preview  in=643 out=2266 reasoning=2169 latency=19.89s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def firstByteOrZero (data : List Nat) : Nat :=
+  match data with
+  | [] => 0
+  | x :: _ => x
+
+theorem firstByteOrZero_correct (data : List Nat) :
+  firstByteOrZero data = (data.head?).getD 0 := by
+  cases data
+  · rfl
+  · rfl
+
+end RepoVerifyAutogen
+

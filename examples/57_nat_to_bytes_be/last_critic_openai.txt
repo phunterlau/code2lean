@@ -1,0 +1,15 @@
+=== critic  model=gpt-5.5  in=1027 out=1228 reasoning=1034 latency=20.18s ===
+VERDICT: WEAK
+REASON: The theorem only proves that decoding the returned list as base-256 gives back n; it does not prove the output bytes are in range 0..255, shortest/canonical, or have no leading zero. Many incorrect implementations such as returning [n] for every n would satisfy this theorem.
+STRONGER_THEOREM:
+namespace RepoVerifyAutogen
+
+theorem natToBytesBe_canonical (n : Nat) :
+  bytesToNat 0 (natToBytesBe n) = n ∧
+  (∀ b, b ∈ natToBytesBe n → b < 256) ∧
+  (if n = 0 then
+    natToBytesBe n = [0]
+  else
+    ∃ b bs, natToBytesBe n = b :: bs ∧ 0 < b) := by sorry
+
+end RepoVerifyAutogen

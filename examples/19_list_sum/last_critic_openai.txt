@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=769 out=142 reasoning=77 latency=3.66s ===
+VERDICT: PASS
+REASON: The theorem proves for every input list that `listSum` equals a recursive mathematical sum specification over all elements, matching the Python function’s intended behavior. It is not limited to a boundary case or tautological.
+STRONGER_THEOREM:
+n/a

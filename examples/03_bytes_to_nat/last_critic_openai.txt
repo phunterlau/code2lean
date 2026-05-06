@@ -1,0 +1,10 @@
+=== critic  model=gpt-5.5  in=816 out=647 reasoning=516 latency=14.70s ===
+VERDICT: WEAK
+REASON: The theorem gives the append-one-byte recurrence, but by itself it does not include the base case, so it would also hold for functions with an arbitrary nonzero value on `[]`. A stronger correctness theorem should directly characterize the returned integer as the big-endian fold from zero.
+STRONGER_THEOREM:
+namespace RepoVerifyAutogen
+
+theorem bytesToNat_correct_stronger (data : List Nat) :
+  bytesToNat data = data.foldl (fun n b => n * 256 + b) 0 := by sorry
+
+end RepoVerifyAutogen

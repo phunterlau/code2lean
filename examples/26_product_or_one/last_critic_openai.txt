@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=800 out=253 reasoning=178 latency=6.48s ===
+VERDICT: PASS
+REASON: The theorem states that for every input list, `productOrOne` equals a recursive specification `listProd` that returns `1` on the empty list and multiplies all elements otherwise. This fully captures the Python function’s intended behavior over arbitrary integer lists.
+STRONGER_THEOREM:
+n/a

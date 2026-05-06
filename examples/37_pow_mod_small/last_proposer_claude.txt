@@ -1,0 +1,31 @@
+=== translate  model=claude-opus-4-7  in=966 out=438 reasoning=0 latency=5.52s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def powModSmallAux (a : Nat) (m : Nat) : Nat → Nat
+  | 0 => 1 % m
+  | n+1 => (powModSmallAux a m n * a) % m
+
+def powModSmall (a b m : Nat) : Nat :=
+  if m = 0 then 0 else powModSmallAux a m b
+
+theorem powModSmallAux_lt (a m : Nat) (b : Nat) (hm : m ≠ 0) :
+    powModSmallAux a m b < m := by
+  induction b with
+  | zero =>
+    unfold powModSmallAux
+    exact Nat.mod_lt _ (Nat.pos_of_ne_zero hm)
+  | succ n ih =>
+    unfold powModSmallAux
+    exact Nat.mod_lt _ (Nat.pos_of_ne_zero hm)
+
+theorem powModSmall_correct (a b m : Nat) : powModSmall a b m < m ∨ (m = 0 ∧ powModSmall a b m = 0) := by
+  unfold powModSmall
+  by_cases hm : m = 0
+  · simp [hm]
+  · simp [hm]
+    exact powModSmallAux_lt a m b hm
+
+end RepoVerifyAutogen
+

@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=630 out=272 reasoning=191 latency=6.64s ===
+VERDICT: PASS
+REASON: The theorem states the full extensional behavior of the translated function for every input list: XOR with zero returns exactly the original data. Although `List Nat` is an abstraction of Python `bytes`, the proved property is the intended identity behavior and is not merely a boundary case or tautology.
+STRONGER_THEOREM:
+n/a

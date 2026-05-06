@@ -1,0 +1,24 @@
+=== translate  model=gemini-3.1-pro-preview  in=624 out=3591 reasoning=3512 latency=31.42s ===
+namespace RepoVerifyAutogen
+
+def sameLength (a b : List Nat) : Bool :=
+  a.length == b.length
+
+theorem sameLength_correct (a b : List Nat) :
+  sameLength a b = true ↔ a.length = b.length :=
+  beq_iff_eq a.length b.length
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=424 out=1276 reasoning=1203 latency=11.63s ===
+namespace RepoVerifyAutogen
+
+def sameLength (a b : List Nat) : Bool :=
+  a.length == b.length
+
+theorem sameLength_correct (a b : List Nat) :
+  sameLength a b = true ↔ a.length = b.length :=
+  beq_iff_eq
+
+end RepoVerifyAutogen
+

@@ -1,0 +1,13 @@
+=== translate  model=gemini-3.1-pro-preview  in=663 out=517 reasoning=452 latency=5.32s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def swapPair (a b : Nat) : Nat × Nat :=
+  (b, a)
+
+theorem swapPair_correct (a b : Nat) : swapPair a b = (b, a) := by
+  rfl
+
+end RepoVerifyAutogen
+

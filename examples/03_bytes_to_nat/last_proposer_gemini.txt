@@ -1,0 +1,63 @@
+=== translate  model=gemini-3.1-pro-preview  in=641 out=5064 reasoning=4790 latency=37.53s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def bytesToNatAux : List Nat → Nat → Nat
+  | [], n => n
+  | b :: bs, n => bytesToNatAux bs (n * 256 + b)
+
+def bytesToNat (data : List Nat) : Nat :=
+  bytesToNatAux data 0
+
+lemma bytesToNatAux_append (l1 l2 : List Nat) (n : Nat) :
+  bytesToNatAux (l1 ++ l2) n = bytesToNatAux l2 (bytesToNatAux l1 n) := by
+  induction l1 generalizing n with
+  | nil => rfl
+  | cons b bs ih => exact ih (n * 256 + b)
+
+theorem bytesToNat_empty :
+  bytesToNat [] = 0 := rfl
+
+theorem bytesToNat_singleton (b : Nat) :
+  bytesToNat [b] = b := rfl
+
+theorem bytesToNat_correct (data : List Nat) (b : Nat) :
+  bytesToNat (data ++ [b]) = bytesToNat data * 256 + b :=
+  bytesToNatAux_append data [b] 0
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=1256 out=8157 reasoning=7872 latency=63.70s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def bytesToNatAux : List Nat → Nat → Nat
+  | [], n => n
+  | b :: bs, n => bytesToNatAux bs (n * 256 + b)
+
+def bytesToNat (data : List Nat) : Nat :=
+  bytesToNatAux data 0
+
+theorem bytesToNatAux_append (l1 l2 : List Nat) (n : Nat) :
+  bytesToNatAux (l1 ++ l2) n = bytesToNatAux l2 (bytesToNatAux l1 n) := by
+  induction l1 generalizing n with
+  | nil => rfl
+  | cons b bs ih => exact ih (n * 256 + b)
+
+theorem bytesToNat_empty :
+  bytesToNat [] = 0 := rfl
+
+theorem bytesToNat_singleton (b : Nat) :
+  bytesToNat [b] = b :=
+  Nat.zero_add b
+
+theorem bytesToNat_correct (data : List Nat) (b : Nat) :
+  bytesToNat (data ++ [b]) = bytesToNat data * 256 + b :=
+  bytesToNatAux_append data [b] 0
+
+end RepoVerifyAutogen
+```
+

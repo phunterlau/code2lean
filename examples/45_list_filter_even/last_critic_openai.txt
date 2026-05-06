@@ -1,0 +1,10 @@
+=== critic  model=gpt-5.5  in=660 out=675 reasoning=516 latency=11.36s ===
+VERDICT: WEAK
+REASON: The theorem only characterizes set-like membership, so it ignores order and multiplicity; buggy implementations such as reversing the even elements or removing duplicate even elements could satisfy it. The Python function specifically preserves the original order and all duplicate even elements.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.listFilterEven_correct_strong :
+    RepoVerifyAutogen.listFilterEven [] = [] ∧
+    ∀ (x : Int) (xs : List Int),
+      RepoVerifyAutogen.listFilterEven (x :: xs) =
+        if x % 2 = 0 then x :: RepoVerifyAutogen.listFilterEven xs
+        else RepoVerifyAutogen.listFilterEven xs := by sorry

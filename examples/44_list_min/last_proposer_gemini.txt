@@ -1,0 +1,305 @@
+=== translate  model=gemini-3.1-pro-preview  in=661 out=25167 reasoning=24397 latency=195.86s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def listMinLoop : Int → List Int → Int
+  | best, [] => best
+  | best, y :: ys => listMinLoop (if y < best then y else best) ys
+
+theorem listMinLoop_correct (best : Int) (xs : List Int) :
+  listMinLoop best xs ≤ best ∧
+  (∀ y ∈ xs, listMinLoop best xs ≤ y) ∧
+  listMinLoop best xs ∈ best :: xs := by
+  induction xs generalizing best with
+  | nil =>
+    simp only [listMinLoop]
+    refine ⟨?_, ?_, ?_⟩
+    · omega
+    · intro y hy
+      cases hy
+    · apply List.Mem.head
+  | cons head tail ih =>
+    have ih_le := (ih (if head < best then head else best)).1
+    have ih_in := (ih (if head < best then head else best)).2.1
+    have ih_mem := (ih (if head < best then head else best)).2.2
+    simp only [listMinLoop]
+    refine ⟨?_, ?_, ?_⟩
+    · by_cases c : head < best
+      · rw [if_pos c] at ih_le ⊢
+        omega
+      · rw [if_neg c] at ih_le ⊢
+        omega
+    · intro y hy
+      cases hy
+      case head =>
+        by_cases c : head < best
+        · rw [if_pos c] at ih_le ⊢
+          omega
+        · rw [if_neg c] at ih_le ⊢
+          omega
+      case tail hy_tail =>
+        exact ih_in y hy_tail
+    · by_cases c : head < best
+      · rw [if_pos c] at ih_mem ⊢
+        cases ih_mem
+        case head =>
+          apply List.Mem.tail
+          apply List.Mem.head
+        case tail h =>
+          apply List.Mem.tail
+          apply List.Mem.tail
+          exact h
+      · rw [if_neg c] at ih_mem ⊢
+        cases ih_mem
+        case head =>
+          apply List.Mem.head
+        case tail h =>
+          apply List.Mem.tail
+          apply List.Mem.tail
+          exact h
+
+def listMin : List Int → Int
+  | [] => 0
+  | x :: xs => listMinLoop x (x :: xs)
+
+theorem listMin_correct (xs : List Int) :
+  (xs = [] → listMin xs = 0) ∧
+  (xs ≠ [] → listMin xs ∈ xs ∧ ∀ y ∈ xs, listMin xs ≤ y) := by
+  constructor
+  · intro h
+    rw [h]
+    rfl
+  · intro h
+    cases xs
+    case nil =>
+      contradiction
+    case cons head tail =>
+      simp only [listMin]
+      have ih_res := listMinLoop_correct head (head :: tail)
+      have h_in := ih_res.2.1
+      have h_mem := ih_res.2.2
+      constructor
+      · cases h_mem
+        case head => apply List.Mem.head
+        case tail h_tail => exact h_tail
+      · exact h_in
+
+end RepoVerifyAutogen
+```
+
+=== repair_0  model=gemini-3.1-pro-preview  in=1182 out=11023 reasoning=10142 latency=79.95s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listMinLoop : Int → List Int → Int
+  | best, [] => best
+  | best, y :: ys => listMinLoop (if y < best then y else best) ys
+
+theorem listMinLoop_correct (best : Int) (xs : List Int) :
+  listMinLoop best xs ≤ best ∧
+  (∀ y ∈ xs, listMinLoop best xs ≤ y) ∧
+  listMinLoop best xs ∈ best :: xs := by
+  induction xs generalizing best with
+  | nil =>
+    simp only [listMinLoop]
+    refine ⟨?_, ?_, ?_⟩
+    · omega
+    · intro y hy
+      cases hy
+    · simp only [List.mem_cons]
+      left
+      rfl
+  | cons head tail ih =>
+    have ih_le := (ih (if head < best then head else best)).1
+    have ih_in := (ih (if head < best then head else best)).2.1
+    have ih_mem := (ih (if head < best then head else best)).2.2
+    simp only [listMinLoop]
+    refine ⟨?_, ?_, ?_⟩
+    · by_cases c : head < best
+      · rw [if_pos c] at ih_le ⊢
+        omega
+      · rw [if_neg c] at ih_le ⊢
+        omega
+    · intro y hy
+      simp only [List.mem_cons] at hy
+      cases hy with
+      | inl hy_head =>
+        rw [hy_head]
+        by_cases c : head < best
+        · rw [if_pos c] at ih_le ⊢
+          omega
+        · rw [if_neg c] at ih_le ⊢
+          omega
+      | inr hy_tail =>
+        exact ih_in y hy_tail
+    · by_cases c : head < best
+      · rw [if_pos c] at ih_mem ⊢
+        simp only [List.mem_cons] at ih_mem ⊢
+        cases ih_mem with
+        | inl h =>
+          right
+          left
+          exact h
+        | inr h =>
+          right
+          right
+          exact h
+      · rw [if_neg c] at ih_mem ⊢
+        simp only [List.mem_cons] at ih_mem ⊢
+        cases ih_mem with
+        | inl h =>
+          left
+          exact h
+        | inr h =>
+          right
+          right
+          exact h
+
+def listMin : List Int → Int
+  | [] => 0
+  | x :: xs => listMinLoop x (x :: xs)
+
+theorem listMin_correct (xs : List Int) :
+  (xs = [] → listMin xs = 0) ∧
+  (xs ≠ [] → listMin xs ∈ xs ∧ ∀ y ∈ xs, listMin xs ≤ y) := by
+  constructor
+  · intro h
+    rw [h]
+    rfl
+  · intro h
+    cases xs with
+    | nil =>
+      exact False.elim (h rfl)
+    | cons head tail =>
+      simp only [listMin]
+      have ih_res := listMinLoop_correct head (head :: tail)
+      have h_in := ih_res.2.1
+      have h_mem := ih_res.2.2
+      constructor
+      · simp only [List.mem_cons] at h_mem ⊢
+        cases h_mem with
+        | inl h1 =>
+          left
+          exact h1
+        | inr h2 =>
+          cases h2 with
+          | inl h2a =>
+            left
+            exact h2a
+          | inr h2b =>
+            right
+            exact h2b
+      · exact h_in
+
+end RepoVerifyAutogen
+
+=== repair_1  model=gemini-3.1-pro-preview  in=1270 out=17727 reasoning=16847 latency=140.06s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listMinLoop : Int → List Int → Int
+  | best, [] => best
+  | best, y :: ys => listMinLoop (if y < best then y else best) ys
+
+theorem listMinLoop_correct (best : Int) (xs : List Int) :
+  listMinLoop best xs ≤ best ∧
+  (∀ y ∈ xs, listMinLoop best xs ≤ y) ∧
+  listMinLoop best xs ∈ best :: xs := by
+  induction xs generalizing best with
+  | nil =>
+    simp only [listMinLoop]
+    refine ⟨?_, ?_, ?_⟩
+    · omega
+    · intro y hy
+      cases hy
+    · simp only [List.mem_cons]
+      left
+      trivial
+  | cons head tail ih =>
+    have ih_le := (ih (if head < best then head else best)).1
+    have ih_in := (ih (if head < best then head else best)).2.1
+    have ih_mem := (ih (if head < best then head else best)).2.2
+    simp only [listMinLoop]
+    refine ⟨?_, ?_, ?_⟩
+    · by_cases c : head < best
+      · rw [if_pos c] at ih_le ⊢
+        omega
+      · rw [if_neg c] at ih_le ⊢
+        omega
+    · intro y hy
+      simp only [List.mem_cons] at hy
+      cases hy with
+      | inl hy_head =>
+        rw [hy_head]
+        by_cases c : head < best
+        · rw [if_pos c] at ih_le ⊢
+          omega
+        · rw [if_neg c] at ih_le ⊢
+          omega
+      | inr hy_tail =>
+        exact ih_in y hy_tail
+    · by_cases c : head < best
+      · rw [if_pos c] at ih_mem ⊢
+        simp only [List.mem_cons] at ih_mem ⊢
+        cases ih_mem with
+        | inl h =>
+          right
+          left
+          exact h
+        | inr h =>
+          right
+          right
+          exact h
+      · rw [if_neg c] at ih_mem ⊢
+        simp only [List.mem_cons] at ih_mem ⊢
+        cases ih_mem with
+        | inl h =>
+          left
+          exact h
+        | inr h =>
+          right
+          right
+          exact h
+
+def listMin : List Int → Int
+  | [] => 0
+  | x :: xs => listMinLoop x (x :: xs)
+
+theorem listMin_correct (xs : List Int) :
+  (xs = [] → listMin xs = 0) ∧
+  (xs ≠ [] → listMin xs ∈ xs ∧ ∀ y ∈ xs, listMin xs ≤ y) := by
+  constructor
+  · intro h
+    rw [h]
+    rfl
+  · intro h
+    cases xs with
+    | nil =>
+      exact False.elim (h rfl)
+    | cons head tail =>
+      simp only [listMin]
+      have ih_res := listMinLoop_correct head (head :: tail)
+      have h_in := ih_res.2.1
+      have h_mem := ih_res.2.2
+      constructor
+      · simp only [List.mem_cons] at h_mem ⊢
+        cases h_mem with
+        | inl h1 =>
+          left
+          exact h1
+        | inr h2 =>
+          cases h2 with
+          | inl h2a =>
+            left
+            exact h2a
+          | inr h2b =>
+            right
+            exact h2b
+      · exact h_in
+
+end RepoVerifyAutogen
+

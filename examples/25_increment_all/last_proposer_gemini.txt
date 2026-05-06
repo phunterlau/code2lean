@@ -1,0 +1,17 @@
+=== translate  model=gemini-3.1-pro-preview  in=647 out=2250 reasoning=2139 latency=19.10s ===
+namespace RepoVerifyAutogen
+
+def incrementAll : List Int → List Int
+  | [] => []
+  | x :: xs => (x + 1) :: incrementAll xs
+
+theorem incrementAll_correct (xs : List Int) : incrementAll xs = xs.map (fun x => x + 1) := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    unfold incrementAll
+    rw [ih]
+    rfl
+
+end RepoVerifyAutogen
+

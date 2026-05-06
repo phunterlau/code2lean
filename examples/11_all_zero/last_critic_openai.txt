@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=665 out=240 reasoning=146 latency=6.41s ===
+VERDICT: PASS
+REASON: The theorem gives an iff characterization: `allZero data` is true exactly when every element of the input list is zero, which matches the Python behavior under the natural `bytes`-as-list-of-byte-values representation. Although the Lean input type is `List Nat` rather than bounded bytes, this is not weaker for the stated zero/nonzero behavior.
+STRONGER_THEOREM:
+n/a

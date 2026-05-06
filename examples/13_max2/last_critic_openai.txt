@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=653 out=288 reasoning=217 latency=6.84s ===
+VERDICT: PASS
+REASON: The theorem applies to all inputs and characterizes the result as one of the two arguments that is at least both, which uniquely pins it down as the larger value on Nat. This matches the Python behavior under the stated non-negative input assumption.
+STRONGER_THEOREM:
+n/a

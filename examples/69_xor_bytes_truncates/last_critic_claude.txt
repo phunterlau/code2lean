@@ -1,0 +1,5 @@
+=== critic  model=claude-opus-4-7  in=1609 out=100 reasoning=0 latency=2.78s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes the function's behavior: it returns [] when lengths differ, and the zipWith of byteXor when lengths match, plus the length specification. This pins down the output on all inputs.
+STRONGER_THEOREM:
+n/a

@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=640 out=7120 reasoning=7006 latency=61.00s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def xorWithZeroKey (data : List Nat) : List Nat :=
+  data.map (fun b => b ^^^ 0)
+
+theorem xorWithZeroKey_correct (data : List Nat) : xorWithZeroKey data = data := by
+  induction data with
+  | nil => rfl
+  | cons hd tl ih =>
+    unfold xorWithZeroKey at *
+    simp [ih]
+
+end RepoVerifyAutogen
+```
+

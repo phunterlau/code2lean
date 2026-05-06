@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=909 out=510 reasoning=443 latency=11.23s ===
+VERDICT: PASS
+REASON: The theorem states that for every input list the function returns true, which fully pins down its Boolean behavior. This is in fact the ground-truth behavior, since incrementing an integer cannot decrease the number of positive elements.
+STRONGER_THEOREM:
+n/a

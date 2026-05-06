@@ -1,0 +1,31 @@
+=== translate  model=gemini-3.1-pro-preview  in=650 out=11245 reasoning=11023 latency=92.46s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def clampInt (x lo hi : Int) : Int :=
+  if x < lo then lo
+  else if hi < x then hi
+  else x
+
+theorem clampInt_correct (x lo hi : Int) (h : lo ≤ hi) :
+  lo ≤ clampInt x lo hi ∧
+  clampInt x lo hi ≤ hi ∧
+  (x < lo → clampInt x lo hi = lo) ∧
+  (hi < x → clampInt x lo hi = hi) ∧
+  (lo ≤ x ∧ x ≤ hi → clampInt x lo hi = x) := by
+  unfold clampInt
+  by_cases h1 : x < lo
+  · simp [h1]
+    omega
+  · simp [h1]
+    by_cases h2 : hi < x
+    · simp [h2]
+      omega
+    · simp [h2]
+      omega
+
+end RepoVerifyAutogen
+```
+

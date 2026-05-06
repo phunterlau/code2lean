@@ -1,0 +1,26 @@
+=== translate  model=claude-opus-4-7  in=926 out=329 reasoning=0 latency=4.38s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def bitCount8Aux : Nat → Nat → Nat
+  | 0, _ => 0
+  | k+1, n => (n % 2) + bitCount8Aux k (n / 2)
+
+def bitCount8 (n : Nat) : Nat := bitCount8Aux 8 n
+
+theorem bitCount8Aux_le (k n : Nat) : bitCount8Aux k n ≤ k := by
+  induction k generalizing n with
+  | zero => simp [bitCount8Aux]
+  | succ k ih =>
+    unfold bitCount8Aux
+    have h1 : n % 2 ≤ 1 := by omega
+    have h2 := ih (n / 2)
+    omega
+
+theorem bitCount8_correct (n : Nat) : bitCount8 n ≤ 8 := by
+  unfold bitCount8
+  exact bitCount8Aux_le 8 n
+
+end RepoVerifyAutogen
+

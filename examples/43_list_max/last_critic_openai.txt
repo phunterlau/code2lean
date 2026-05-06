@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=1526 out=266 reasoning=194 latency=6.34s ===
+VERDICT: PASS
+REASON: The theorem covers both the empty-list special case and all non-empty lists, requiring the result to be a list element that is greater than or equal to every list element. Over integers this uniquely characterizes the maximum element, matching the Python behavior.
+STRONGER_THEOREM:
+n/a

@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=592 out=183 reasoning=119 latency=6.44s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes the two possible Boolean inputs, proving exactly that True maps to 1 and False maps to 0. Since the domain is Bool, this pins down the function's behavior completely.
+STRONGER_THEOREM:
+n/a

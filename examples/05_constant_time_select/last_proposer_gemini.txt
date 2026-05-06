@@ -1,0 +1,16 @@
+=== translate  model=gemini-3.1-pro-preview  in=662 out=10585 reasoning=10492 latency=88.24s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def constantTimeSelect (cond : Bool) (a b : Int) : Int :=
+  if cond then a else b
+
+theorem constantTimeSelect_correct (a b : Int) :
+  constantTimeSelect true a b = a ∧ constantTimeSelect false a b = b := by
+  exact ⟨rfl, rfl⟩
+
+end RepoVerifyAutogen
+```
+

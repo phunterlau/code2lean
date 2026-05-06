@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=651 out=186 reasoning=127 latency=6.35s ===
+VERDICT: PASS
+REASON: The theorem covers both possible Boolean inputs for arbitrary integers `a` and `b`, so it fully characterizes the function’s return value. No additional functional behavior is left unspecified.
+STRONGER_THEOREM:
+n/a

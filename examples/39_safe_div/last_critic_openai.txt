@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=656 out=236 reasoning=160 latency=5.45s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes the two possible cases: when b is zero the result is none, and when b is nonzero the result is exactly some (a / b). Since inputs are modeled as Nat, this matches Python’s non-negative integer floor division behavior.
+STRONGER_THEOREM:
+n/a

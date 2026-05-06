@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=628 out=4404 reasoning=4282 latency=36.19s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def max2 (a b : Nat) : Nat :=
+  if a < b then b else a
+
+theorem max2_correct (a b : Nat) :
+  a ≤ max2 a b ∧ b ≤ max2 a b ∧ (max2 a b = a ∨ max2 a b = b) := by
+  unfold max2
+  by_cases h : a < b
+  · simp [h]
+    omega
+  · simp [h]
+    omega
+
+end RepoVerifyAutogen
+

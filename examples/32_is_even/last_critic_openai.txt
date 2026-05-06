@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=603 out=162 reasoning=88 latency=6.64s ===
+VERDICT: PASS
+REASON: The Lean function directly implements `n % 2 == 0` over `Nat`, matching the Python function under its non-negative input precondition. The theorem characterizes exactly when the Boolean result is true, which pins down the intended evenness behavior.
+STRONGER_THEOREM:
+n/a

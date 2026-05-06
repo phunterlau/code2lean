@@ -1,0 +1,9 @@
+=== critic  model=gpt-5.5  in=785 out=1151 reasoning=1034 latency=20.21s ===
+VERDICT: WEAK
+REASON: The theorem only states the output length, which is satisfied by many incorrect implementations such as returning zeros or elements from just one input. It does not characterize that each output element is the minimum of the corresponding paired inputs.
+STRONGER_THEOREM:
+namespace RepoVerifyAutogen
+
+theorem listZipMin_correct_stronger (xs ys : List Int) :
+    listZipMin xs ys =
+      List.zipWith (fun x y => if x < y then x else y) xs ys := by sorry

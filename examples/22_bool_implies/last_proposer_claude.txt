@@ -1,0 +1,14 @@
+=== translate  model=claude-opus-4-7  in=907 out=140 reasoning=0 latency=2.49s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def boolImplies (a : Bool) (b : Bool) : Bool :=
+  if a then b else true
+
+theorem boolImplies_correct (a b : Bool) :
+    boolImplies a b = true ↔ (a = true → b = true) := by
+  cases a <;> cases b <;> simp [boolImplies]
+
+end RepoVerifyAutogen
+

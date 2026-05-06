@@ -1,0 +1,31 @@
+=== translate  model=gpt-5.5  in=637 out=5040 reasoning=4846 latency=82.72s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def powModSmall (a b m : Nat) : Nat :=
+  if m = 0 then
+    0
+  else
+    match b with
+    | 0 => 1
+    | Nat.succ n => (a ^ Nat.succ n) % m
+
+theorem powModSmall_correct (a b m : Nat) :
+    powModSmall a b m =
+      if m = 0 then
+        0
+      else if b = 0 then
+        1
+      else
+        (a ^ b) % m := by
+  by_cases hm : m = 0
+  · simp [powModSmall, hm]
+  · cases b with
+    | zero =>
+        simp [powModSmall, hm]
+    | succ n =>
+        simp [powModSmall, hm]
+
+end RepoVerifyAutogen
+

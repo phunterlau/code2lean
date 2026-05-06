@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=616 out=100 reasoning=51 latency=3.08s ===
+VERDICT: PASS
+REASON: The theorem directly characterizes the returned pair for all non-negative inputs represented as `Nat`, exactly matching the Python function's behavior.
+STRONGER_THEOREM:
+n/a

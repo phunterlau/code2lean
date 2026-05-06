@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=685 out=409 reasoning=346 latency=11.36s ===
+VERDICT: PASS
+REASON: The theorem quantifies over all Nat inputs and completely characterizes this Bool-valued function's observable behavior as always returning true, which is exactly what the modulo encode/decode identity implies for natural numbers.
+STRONGER_THEOREM:
+n/a

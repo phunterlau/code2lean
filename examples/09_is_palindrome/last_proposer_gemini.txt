@@ -1,0 +1,30 @@
+=== translate  model=gemini-3.1-pro-preview  in=615 out=4380 reasoning=4298 latency=37.02s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def isPalindrome (xs : List Int) : Bool :=
+  xs == xs.reverse
+
+theorem isPalindrome_correct (xs : List Int) :
+  isPalindrome xs = true ↔ xs = xs.reverse := by
+  unfold isPalindrome
+  exact beq_iff_eq xs xs.reverse
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=423 out=927 reasoning=849 latency=8.62s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def isPalindrome (xs : List Int) : Bool :=
+  xs == xs.reverse
+
+theorem isPalindrome_correct (xs : List Int) :
+  isPalindrome xs = true ↔ xs = xs.reverse := by
+  unfold isPalindrome
+  exact beq_iff_eq
+
+end RepoVerifyAutogen
+

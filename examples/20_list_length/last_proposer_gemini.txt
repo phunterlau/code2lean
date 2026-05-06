@@ -1,0 +1,59 @@
+=== translate  model=gemini-3.1-pro-preview  in=628 out=9600 reasoning=9401 latency=76.46s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listLengthAux (xs : List Int) (n : Nat) : Nat :=
+  match xs with
+  | [] => n
+  | _ :: t => listLengthAux t (n + 1)
+
+def listLength (xs : List Int) : Nat :=
+  listLengthAux xs 0
+
+theorem listLengthAux_correct (xs : List Int) (n : Nat) : listLengthAux xs n = xs.length + n := by
+  induction xs generalizing n with
+  | nil => rfl
+  | cons hd tl ih =>
+    simp [listLengthAux, List.length]
+    rw [ih]
+    omega
+
+theorem listLength_correct (xs : List Int) : listLength xs = xs.length := by
+  simp [listLength]
+  rw [listLengthAux_correct]
+  omega
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=556 out=5267 reasoning=5061 latency=41.62s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def listLengthAux (xs : List Int) (n : Nat) : Nat :=
+  match xs with
+  | [] => n
+  | _ :: t => listLengthAux t (n + 1)
+
+def listLength (xs : List Int) : Nat :=
+  listLengthAux xs 0
+
+theorem listLengthAux_correct (xs : List Int) (n : Nat) : listLengthAux xs n = xs.length + n := by
+  induction xs generalizing n with
+  | nil =>
+    simp [listLengthAux]
+  | cons hd tl ih =>
+    simp [listLengthAux]
+    rw [ih]
+    omega
+
+theorem listLength_correct (xs : List Int) : listLength xs = xs.length := by
+  simp [listLength]
+  rw [listLengthAux_correct]
+  omega
+
+end RepoVerifyAutogen
+```
+

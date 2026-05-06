@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=691 out=153 reasoning=87 latency=3.94s ===
+VERDICT: PASS
+REASON: The theorem states for all natural-number inputs that the Lean function returns exactly min(a + b, 255), which matches the Python implementation and docstring behavior. It is not merely a boundary case or tautology.
+STRONGER_THEOREM:
+n/a

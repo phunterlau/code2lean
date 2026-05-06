@@ -1,0 +1,39 @@
+=== translate  model=gemini-3.1-pro-preview  in=628 out=6026 reasoning=5787 latency=46.97s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def listSumLoop : List Int → Int → Int
+| [], total => total
+| x :: xs, total => listSumLoop xs (total + x)
+
+def listSum (xs : List Int) : Int :=
+  listSumLoop xs 0
+
+def specSum : List Int → Int
+| [] => 0
+| x :: xs => x + specSum xs
+
+theorem listSumLoop_eq (xs : List Int) (total : Int) :
+  listSumLoop xs total = total + specSum xs := by
+  induction xs generalizing total with
+  | nil =>
+    unfold listSumLoop
+    unfold specSum
+    omega
+  | cons x xs ih =>
+    unfold listSumLoop
+    unfold specSum
+    rw [ih (total + x)]
+    omega
+
+theorem listSum_correct (xs : List Int) :
+  listSum xs = specSum xs := by
+  unfold listSum
+  rw [listSumLoop_eq]
+  omega
+
+end RepoVerifyAutogen
+```
+

@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=949 out=628 reasoning=516 latency=12.77s ===
+VERDICT: WEAK
+REASON: The theorem only proves that the result is an upper bound for elements of the list; it does not prove that it is the least such upper bound or that empty input returns 0. Many incorrect implementations, such as always returning a huge number, would satisfy this theorem.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.byteMax_correct_strong (data : List Nat) : RepoVerifyAutogen.byteMax data = data.foldl Nat.max 0 := by sorry

@@ -1,0 +1,29 @@
+=== translate  model=gemini-3.1-pro-preview  in=655 out=10889 reasoning=10698 latency=86.14s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def xorBytes : List Nat → List Nat → List Nat
+  | [], _ => []
+  | _::_, [] => []
+  | x::xs, y::ys => (x ^^^ y) :: xorBytes xs ys
+
+theorem xorBytes_correct (a b : List Nat) :
+    xorBytes a b = List.zipWith (fun x y => x ^^^ y) a b := by
+  induction a generalizing b with
+  | nil =>
+    cases b with
+    | nil => rfl
+    | cons y ys => rfl
+  | cons x xs ih =>
+    cases b with
+    | nil => rfl
+    | cons y ys =>
+      simp only [xorBytes]
+      rw [ih ys]
+      rfl
+
+end RepoVerifyAutogen
+```
+

@@ -1,0 +1,5 @@
+=== critic  model=claude-opus-4-7  in=1769 out=100 reasoning=0 latency=3.00s ===
+VERDICT: PASS
+REASON: The theorem proves that bytesToNatLeDisguised equals a clean recursive big-endian specification (b * 256^|rest| + ...), which fully pins down the function's behavior on all inputs.
+STRONGER_THEOREM:
+n/a

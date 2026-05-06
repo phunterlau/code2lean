@@ -1,0 +1,63 @@
+import Std
+
+namespace RepoVerifyAutogen
+
+def listIndexOfAux (xs : List Int) (x : Int) (i : Int) : Int :=
+  match xs with
+  | [] => -1
+  | y :: ys => if y = x then i else listIndexOfAux ys x (i + 1)
+
+def listIndexOf (xs : List Int) (x : Int) : Int :=
+  listIndexOfAux xs x 0
+
+theorem listIndexOfAux_eq_neg_one (xs : List Int) (x : Int) (i : Int) (hi : 0 ≤ i) :
+    listIndexOfAux xs x i = -1 ↔ ¬ (x ∈ xs) := by
+  induction xs generalizing i with
+  | nil =>
+    unfold listIndexOfAux
+    refine Iff.intro ?_ ?_
+    · intro _ h2
+      cases h2
+    · intro _
+      rfl
+  | cons y ys ih =>
+    unfold listIndexOfAux
+    by_cases h : y = x
+    · rw [if_pos h]
+      refine Iff.intro ?_ ?_
+      · intro heq
+        omega
+      · intro h2
+        have h_mem : x ∈ y :: ys := by
+          rw [h]
+          exact List.Mem.head ys
+        exact False.elim (h2 h_mem)
+    · rw [if_neg h]
+      rw [ih (i + 1) (by omega)]
+      refine Iff.intro ?_ ?_
+      · intro h1 h2
+        cases h2 with
+        | head _ => exact h rfl
+        | tail _ mem => exact h1 mem
+      · intro h1 h2
+        exact h1 (List.Mem.tail y h2)
+
+theorem listIndexOf_correct (xs : List Int) (x : Int) :
+    listIndexOf xs x = -1 ↔ ¬ (x ∈ xs) := by
+  unfold listIndexOf
+  exact listIndexOfAux_eq_neg_one xs x 0 (by omega)
+
+end RepoVerifyAutogen
+
+-- Orchestrator-appended diagnostics. Do not edit by hand.
+
+open RepoVerifyAutogen
+#eval "ORCH-DIAG-BEGIN-7c8e9d2a"
+#eval listIndexOf [] 1
+#eval listIndexOf [1] 1
+#eval listIndexOf [1, 2, 3] 2
+#eval listIndexOf [1, 2, 1] 1
+#eval listIndexOf [4, 5, 6] 9
+#eval "ORCH-DIAG-END-7c8e9d2a"
+#print axioms RepoVerifyAutogen.listIndexOf_correct
+

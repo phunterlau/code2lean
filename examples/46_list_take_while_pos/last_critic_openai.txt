@@ -1,0 +1,11 @@
+=== critic  model=gpt-5.5  in=703 out=4357 reasoning=4142 latency=69.50s ===
+VERDICT: WEAK
+REASON: The theorem fully characterizes the Lean `List Nat` implementation, but the Python function accepts `list[int]`, so it says nothing about valid negative inputs and therefore cannot pin down the Python behavior. It also proves a nonzero-prefix spec rather than an Int-level specification of the source on all integers.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.listTakeWhilePos_correct_stronger (xs : List Nat) :
+  (∃ suf : List Nat, xs = RepoVerifyAutogen.listTakeWhilePos xs ++ suf) ∧
+  (∀ a, a ∈ RepoVerifyAutogen.listTakeWhilePos xs → a > 0) ∧
+  (∀ ys : List Nat,
+    (∃ suf : List Nat, xs = ys ++ suf) →
+    (∀ a, a ∈ ys → a > 0) →
+    ys.length ≤ (RepoVerifyAutogen.listTakeWhilePos xs).length) := by sorry

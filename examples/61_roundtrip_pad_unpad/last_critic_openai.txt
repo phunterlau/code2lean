@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=2347 out=515 reasoning=432 latency=11.31s ===
+VERDICT: PASS
+REASON: The theorem proves the function returns true for every input, which fully characterizes this Bool-valued Python function's behavior since the roundtrip padding/unpadding always recovers the original data. Although the Lean model uses `List Nat` rather than bounded bytes, that does not affect this function's result.
+STRONGER_THEOREM:
+n/a

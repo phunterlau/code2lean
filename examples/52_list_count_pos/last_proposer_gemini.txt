@@ -1,0 +1,56 @@
+=== translate  model=gemini-3.1-pro-preview  in=647 out=7989 reasoning=7801 latency=64.37s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listCountPos : List Int → Nat
+  | [] => 0
+  | x :: xs => (if x > 0 then 1 else 0) + listCountPos xs
+
+theorem listCountPos_le_length (xs : List Int) : listCountPos xs ≤ xs.length := by
+  induction xs with
+  | nil => omega
+  | cons x xs ih =>
+    simp [listCountPos]
+    split
+    · omega
+    · omega
+
+theorem listCountPos_correct (xs ys : List Int) : listCountPos (xs ++ ys) = listCountPos xs + listCountPos ys := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    simp [listCountPos, ih]
+    omega
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=646 out=3881 reasoning=3680 latency=32.66s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listCountPos : List Int → Nat
+  | [] => 0
+  | x :: xs => (if x > 0 then 1 else 0) + listCountPos xs
+
+theorem listCountPos_le_length (xs : List Int) : listCountPos xs ≤ xs.length := by
+  induction xs with
+  | nil =>
+    simp [listCountPos]
+  | cons x xs ih =>
+    simp [listCountPos]
+    split
+    · omega
+    · omega
+
+theorem listCountPos_correct (xs ys : List Int) : listCountPos (xs ++ ys) = listCountPos xs + listCountPos ys := by
+  induction xs with
+  | nil =>
+    simp [listCountPos]
+  | cons x xs ih =>
+    simp [listCountPos, ih]
+    omega
+
+end RepoVerifyAutogen
+

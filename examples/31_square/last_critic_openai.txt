@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=535 out=125 reasoning=67 latency=3.45s ===
+VERDICT: PASS
+REASON: The theorem fully characterizes the Lean function on its Nat domain by proving that for every input it returns exactly n * n, matching the Python behavior for n >= 0.
+STRONGER_THEOREM:
+n/a

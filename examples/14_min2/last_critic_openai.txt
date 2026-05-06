@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=658 out=305 reasoning=234 latency=6.76s ===
+VERDICT: PASS
+REASON: The theorem characterizes the return value as one of the two inputs that is less than or equal to both, which uniquely pins it down as the minimum for natural-number inputs. This matches the Python behavior under the stated non-negative input assumption.
+STRONGER_THEOREM:
+n/a

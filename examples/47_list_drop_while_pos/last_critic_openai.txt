@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=778 out=592 reasoning=516 latency=11.77s ===
+VERDICT: PASS
+REASON: The theorem proves equality for all inputs against a concrete recursive specification that exactly matches the Python loop behavior: return the suffix at the first zero, otherwise return []. This is not just a boundary case or tautology; it fully determines the function's behavior on all lists.
+STRONGER_THEOREM:
+n/a

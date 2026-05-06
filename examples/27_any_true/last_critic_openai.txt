@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=642 out=173 reasoning=108 latency=4.29s ===
+VERDICT: PASS
+REASON: The theorem quantifies over all input lists and states exactly that the function returns true iff the list contains true, matching the Python specification. Since the return type is Bool, this fully determines the function's behavior.
+STRONGER_THEOREM:
+n/a

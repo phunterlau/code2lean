@@ -1,0 +1,5 @@
+=== critic  model=claude-opus-4-7  in=1338 out=92 reasoning=0 latency=2.61s ===
+VERDICT: PASS
+REASON: The theorem characterizes parityXor as true iff exactly one of a, b is odd, which is precisely the docstring's specification. It covers all inputs and isn't a tautology.
+STRONGER_THEOREM:
+n/a

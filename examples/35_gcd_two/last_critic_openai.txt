@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=753 out=282 reasoning=199 latency=6.99s ===
+VERDICT: PASS
+REASON: The theorem states for all natural-number inputs that `gcdTwo a b` equals Lean’s standard `Nat.gcd a b`, which directly captures the intended behavior for non-negative integers. It is not merely a boundary case or tautology, and it characterizes the function’s return value fully.
+STRONGER_THEOREM:
+n/a

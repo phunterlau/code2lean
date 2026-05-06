@@ -1,0 +1,24 @@
+=== translate  model=gemini-3.1-pro-preview  in=626 out=11852 reasoning=11712 latency=86.69s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def allZero : List Nat → Bool
+| [] => true
+| 0 :: bs => allZero bs
+| (Nat.succ n) :: bs => false
+
+theorem allZero_correct (data : List Nat) :
+  allZero data = true ↔ ∀ x ∈ data, x = 0 := by
+  induction data with
+  | nil =>
+    simp [allZero]
+  | cons b bs ih =>
+    cases b with
+    | zero =>
+      simp [allZero, ih]
+    | succ n =>
+      simp [allZero]
+
+end RepoVerifyAutogen
+

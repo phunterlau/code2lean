@@ -1,0 +1,76 @@
+=== translate  model=gemini-3.1-pro-preview  in=640 out=11312 reasoning=11040 latency=92.05s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listProd : List Int → Int
+  | [] => 1
+  | x::xs => x * listProd xs
+
+def productOrOneAux : List Int → Int → Int
+  | [], acc => acc
+  | x::xs, acc => productOrOneAux xs (acc * x)
+
+def productOrOne (xs : List Int) : Int :=
+  productOrOneAux xs 1
+
+lemma productOrOneAux_eq (xs : List Int) (acc : Int) :
+    productOrOneAux xs acc = acc * listProd xs := by
+  induction xs generalizing acc with
+  | nil =>
+    unfold productOrOneAux
+    unfold listProd
+    rw [Int.mul_one]
+  | cons x xs ih =>
+    unfold productOrOneAux
+    unfold listProd
+    rw [ih (acc * x)]
+    rw [Int.mul_assoc]
+
+theorem productOrOne_correct (xs : List Int) :
+    productOrOne xs = listProd xs := by
+  unfold productOrOne
+  rw [productOrOneAux_eq]
+  rw [Int.one_mul]
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=1021 out=3578 reasoning=3301 latency=28.94s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def listProd : List Int → Int
+  | [] => 1
+  | x::xs => x * listProd xs
+
+def productOrOneAux : List Int → Int → Int
+  | [], acc => acc
+  | x::xs, acc => productOrOneAux xs (acc * x)
+
+def productOrOne (xs : List Int) : Int :=
+  productOrOneAux xs 1
+
+theorem productOrOneAux_eq (xs : List Int) (acc : Int) :
+    productOrOneAux xs acc = acc * listProd xs := by
+  induction xs generalizing acc with
+  | nil =>
+    unfold productOrOneAux
+    unfold listProd
+    rw [Int.mul_one]
+  | cons x xs ih =>
+    unfold productOrOneAux
+    unfold listProd
+    rw [ih (acc * x)]
+    rw [Int.mul_assoc]
+
+theorem productOrOne_correct (xs : List Int) :
+    productOrOne xs = listProd xs := by
+  unfold productOrOne
+  rw [productOrOneAux_eq]
+  rw [Int.one_mul]
+
+end RepoVerifyAutogen
+```
+

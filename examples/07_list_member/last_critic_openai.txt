@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=719 out=581 reasoning=516 latency=12.47s ===
+VERDICT: PASS
+REASON: The theorem gives an exact iff characterization of the Boolean result: `listMember x xs` is true precisely when `x` occurs in `xs`. This pins down the intended membership behavior for the Lean function.
+STRONGER_THEOREM:
+n/a

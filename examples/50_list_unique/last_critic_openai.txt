@@ -1,0 +1,12 @@
+=== critic  model=gpt-5.5  in=861 out=681 reasoning=516 latency=13.73s ===
+VERDICT: WEAK
+REASON: The theorem proves only that the output has the same set of elements as the input; it does not show duplicates are removed or that the first-occurrence order is preserved. Functions like the identity function or reverse also satisfy this membership equivalence but do not implement the Python behavior.
+STRONGER_THEOREM:
+namespace RepoVerifyAutogen
+
+theorem listUnique_correct_stronger (xs : List Nat) :
+  listUnique xs = xs.foldl (fun out x => if x ∈ out then out else out ++ [x]) [] ∧
+  (listUnique xs).Nodup ∧
+  ∀ y, y ∈ listUnique xs ↔ y ∈ xs := by sorry
+
+end RepoVerifyAutogen

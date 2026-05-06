@@ -1,0 +1,20 @@
+=== translate  model=gemini-3.1-pro-preview  in=631 out=4282 reasoning=4166 latency=35.86s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def absDiff (a b : Int) : Int :=
+  if a < b then
+    b - a
+  else
+    a - b
+
+theorem absDiff_correct (a b : Int) :
+  0 ≤ absDiff a b ∧
+  (absDiff a b = a - b ∨ absDiff a b = b - a) ∧
+  absDiff a b = absDiff b a := by
+  unfold absDiff
+  omega
+
+end RepoVerifyAutogen
+

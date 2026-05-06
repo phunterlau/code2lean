@@ -1,0 +1,14 @@
+=== critic  model=gpt-5.5  in=759 out=725 reasoning=516 latency=11.59s ===
+VERDICT: WEAK
+REASON: The theorem only proves that the result is at most 8, which many incorrect implementations such as a constant-zero function would satisfy. It does not characterize that the result is the number of 1 bits in the low 8 bits of the input, and the Lean model also only covers Nat inputs rather than all Python integers.
+STRONGER_THEOREM:
+theorem RepoVerifyAutogen.bitCount8_correct_stronger (n : Nat) :
+  RepoVerifyAutogen.bitCount8 n =
+    (n % 2) +
+    ((n / 2) % 2) +
+    ((n / 4) % 2) +
+    ((n / 8) % 2) +
+    ((n / 16) % 2) +
+    ((n / 32) % 2) +
+    ((n / 64) % 2) +
+    ((n / 128) % 2) := by sorry

@@ -1,0 +1,103 @@
+=== translate  model=gemini-3.1-pro-preview  in=639 out=22250 reasoning=22046 latency=178.41s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcdTwo (a b : Nat) : Nat :=
+  if h : b = 0 then
+    a
+  else
+    gcdTwo b (a % b)
+termination_by b
+decreasing_by omega
+
+theorem gcdTwo_correct (a b : Nat) : gcdTwo a b = Nat.gcd a b := by
+  have H : ∀ y x, gcdTwo x y = Nat.gcd x y := by
+    refine fun y => Nat.strongInductionOn y (fun n ih x => ?_)
+    cases n with
+    | zero =>
+      unfold gcdTwo
+      simp
+    | succ k =>
+      unfold gcdTwo
+      simp
+      rw [ih (x % (k + 1)) (by omega) (k + 1)]
+      rfl
+  exact H b a
+
+end RepoVerifyAutogen
+```
+
+=== repair_0  model=gemini-3.1-pro-preview  in=928 out=13616 reasoning=13413 latency=107.06s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcdTwo (a b : Nat) : Nat :=
+  if h : b = 0 then
+    a
+  else
+    gcdTwo b (a % b)
+termination_by b
+decreasing_by
+  apply Nat.mod_lt
+  omega
+
+theorem gcdTwo_correct (a b : Nat) : gcdTwo a b = Nat.gcd a b :=
+  if h : b = 0 then by
+    unfold gcdTwo
+    rw [dif_pos h]
+    rw [h]
+    rfl
+  else by
+    unfold gcdTwo
+    rw [dif_neg h]
+    rw [gcdTwo_correct b (a % b)]
+    rw [Nat.gcd_rec a b]
+termination_by b
+decreasing_by
+  apply Nat.mod_lt
+  omega
+
+end RepoVerifyAutogen
+```
+
+=== repair_1  model=gemini-3.1-pro-preview  in=653 out=13658 reasoning=13418 latency=105.08s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def gcdTwo (a b : Nat) : Nat :=
+  if _h : b = 0 then
+    a
+  else
+    gcdTwo b (a % b)
+termination_by b
+decreasing_by
+  apply Nat.mod_lt
+  omega
+
+theorem gcdTwo_correct (a b : Nat) : gcdTwo a b = Nat.gcd a b :=
+  if h : b = 0 then by
+    unfold gcdTwo
+    rw [dif_pos h]
+    rw [h]
+    rw [Nat.gcd_zero_right]
+  else by
+    unfold gcdTwo
+    rw [dif_neg h]
+    rw [gcdTwo_correct b (a % b)]
+    rw [Nat.gcd_comm a b]
+    rw [Nat.gcd_rec b a]
+    rw [Nat.gcd_comm (a % b) b]
+termination_by b
+decreasing_by
+  apply Nat.mod_lt
+  omega
+
+end RepoVerifyAutogen
+```
+

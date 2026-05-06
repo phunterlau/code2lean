@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=587 out=132 reasoning=53 latency=4.80s ===
+VERDICT: PASS
+REASON: The theorem universally states that for all input lists, `listConcat` returns exactly `xs ++ ys`, which is the intended behavior of Python `xs + ys` for lists. It is not merely a boundary case or tautology; it pins down the full concatenation behavior.
+STRONGER_THEOREM:
+n/a

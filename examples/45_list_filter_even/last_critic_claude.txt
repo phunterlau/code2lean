@@ -1,0 +1,6 @@
+=== critic  model=claude-opus-4-7  in=1026 out=170 reasoning=0 latency=3.77s ===
+VERDICT: WEAK
+REASON: The membership-based characterization ignores order, multiplicity, and the relative ordering of elements, so it would be satisfied by a function that returns evens in any order or deduplicated. The Python function preserves order and duplicates, which this theorem does not capture.
+STRONGER_THEOREM:
+theorem listFilterEven_correct (xs : List Nat) :
+    listFilterEven xs = xs.filter (fun x => x % 2 = 0) := by sorry

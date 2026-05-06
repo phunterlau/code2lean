@@ -1,0 +1,12 @@
+=== translate  model=gemini-3.1-pro-preview  in=631 out=3232 reasoning=3149 latency=28.16s ===
+namespace RepoVerifyAutogen
+
+def maskHighBit (b : Nat) : Nat :=
+  b % 128
+
+theorem maskHighBit_correct (b : Nat) : maskHighBit b < 128 ∧ (b < 128 → maskHighBit b = b) := by
+  unfold maskHighBit
+  omega
+
+end RepoVerifyAutogen
+

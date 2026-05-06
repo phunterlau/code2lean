@@ -1,0 +1,11 @@
+=== translate  model=gemini-3.1-pro-preview  in=602 out=1560 reasoning=1511 latency=14.68s ===
+namespace RepoVerifyAutogen
+
+def square (n : Nat) : Nat :=
+  n * n
+
+theorem square_correct (n : Nat) : square n = n * n := by
+  rfl
+
+end RepoVerifyAutogen
+

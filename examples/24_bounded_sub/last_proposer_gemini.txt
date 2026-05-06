@@ -1,0 +1,19 @@
+=== translate  model=gemini-3.1-pro-preview  in=638 out=3227 reasoning=3141 latency=26.88s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def boundedSub (a b : Nat) : Nat :=
+  if a < b then
+    0
+  else
+    a - b
+
+theorem boundedSub_correct (a b : Nat) : boundedSub a b = a - b := by
+  unfold boundedSub
+  split
+  · omega
+  · rfl
+
+end RepoVerifyAutogen
+

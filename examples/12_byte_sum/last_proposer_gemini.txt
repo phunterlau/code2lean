@@ -1,0 +1,44 @@
+=== translate  model=gemini-3.1-pro-preview  in=625 out=5351 reasoning=5173 latency=41.65s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def byteSum : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + byteSum xs
+
+theorem byteSum_correct (xs ys : List Nat) : byteSum (xs ++ ys) = byteSum xs + byteSum ys := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    calc
+      byteSum ((x :: xs) ++ ys) = x + byteSum (xs ++ ys) := rfl
+      _ = x + (byteSum xs + byteSum ys) := by rw [ih]
+      _ = (x + byteSum xs) + byteSum ys := by omega
+      _ = byteSum (x :: xs) + byteSum ys := rfl
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=547 out=3848 reasoning=3656 latency=30.17s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def byteSum : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + byteSum xs
+
+theorem byteSum_correct (xs ys : List Nat) : byteSum (xs ++ ys) = byteSum xs + byteSum ys := by
+  induction xs with
+  | nil => exact (Nat.zero_add _).symm
+  | cons x xs ih =>
+    calc
+      byteSum ((x :: xs) ++ ys) = x + byteSum (xs ++ ys) := rfl
+      _ = x + (byteSum xs + byteSum ys) := by rw [ih]
+      _ = (x + byteSum xs) + byteSum ys := by omega
+      _ = byteSum (x :: xs) + byteSum ys := rfl
+
+end RepoVerifyAutogen
+```
+

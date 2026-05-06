@@ -1,0 +1,92 @@
+=== translate  model=gemini-3.1-pro-preview  in=647 out=23475 reasoning=23143 latency=190.72s ===
+import Std
+
+namespace RepoVerifyAutogen
+
+def listUniqueAux (xs : List Nat) (out : List Nat) : List Nat :=
+  match xs with
+  | [] => out
+  | x :: tail =>
+    if x ∈ out then
+      listUniqueAux tail out
+    else
+      listUniqueAux tail (out ++ [x])
+
+def listUnique (xs : List Nat) : List Nat :=
+  listUniqueAux xs []
+
+lemma listUniqueAux_mem (xs out : List Nat) (y : Nat) :
+  y ∈ listUniqueAux xs out ↔ y ∈ xs ∨ y ∈ out := by
+  induction xs generalizing out with
+  | nil =>
+    simp [listUniqueAux]
+  | cons x xs ih =>
+    by_cases h : x ∈ out
+    · simp [listUniqueAux, h]
+      rw [ih out]
+      by_cases hyx : y = x
+      · subst hyx
+        simp [h]
+      · simp [hyx]
+    · simp [listUniqueAux, h]
+      rw [ih (out ++ [x])]
+      by_cases hyx : y = x
+      · subst hyx
+        simp
+      · simp [hyx]
+
+theorem listUnique_correct (xs : List Nat) (y : Nat) :
+  y ∈ listUnique xs ↔ y ∈ xs := by
+  unfold listUnique
+  rw [listUniqueAux_mem]
+  simp
+
+end RepoVerifyAutogen
+
+=== repair_0  model=gemini-3.1-pro-preview  in=1036 out=9211 reasoning=8880 latency=72.04s ===
+```lean
+import Std
+
+namespace RepoVerifyAutogen
+
+def listUniqueAux (xs : List Nat) (out : List Nat) : List Nat :=
+  match xs with
+  | [] => out
+  | x :: tail =>
+    if x ∈ out then
+      listUniqueAux tail out
+    else
+      listUniqueAux tail (out ++ [x])
+
+def listUnique (xs : List Nat) : List Nat :=
+  listUniqueAux xs []
+
+theorem listUniqueAux_mem (xs out : List Nat) (y : Nat) :
+  y ∈ listUniqueAux xs out ↔ y ∈ xs ∨ y ∈ out := by
+  induction xs generalizing out with
+  | nil =>
+    simp [listUniqueAux]
+  | cons x xs ih =>
+    by_cases h : x ∈ out
+    · simp [listUniqueAux, h]
+      rw [ih out]
+      by_cases hy : y = x
+      · subst hy
+        simp [h]
+      · simp [hy]
+    · simp [listUniqueAux, h]
+      rw [ih (out ++ [x])]
+      by_cases hy : y = x
+      · subst hy
+        simp
+      · simp [hy]
+
+theorem listUnique_correct (xs : List Nat) (y : Nat) :
+  y ∈ listUnique xs ↔ y ∈ xs := by
+  unfold listUnique
+  rw [listUniqueAux_mem]
+  simp
+
+end RepoVerifyAutogen
+```
+

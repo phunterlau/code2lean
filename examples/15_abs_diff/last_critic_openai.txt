@@ -1,0 +1,5 @@
+=== critic  model=gpt-5.5  in=655 out=278 reasoning=208 latency=6.02s ===
+VERDICT: PASS
+REASON: The theorem states non-negativity and that the result is one of the two signed differences; over integers this uniquely forces the correct absolute difference for every pair of inputs. Symmetry is extra but consistent, and the theorem covers all inputs.
+STRONGER_THEOREM:
+n/a
