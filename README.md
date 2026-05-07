@@ -1,5 +1,11 @@
 # code2lean
 
+```
+░█▀▀░█▀█░█▀▄░█▀▀░▀▀▄░█░░░█▀▀░█▀█░█▀█
+░█░░░█░█░█░█░█▀▀░▄▀░░█░░░█▀▀░█▀█░█░█
+░▀▀▀░▀▀▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀░▀
+```
+
 > Source code → LLM proposer → Lean 4 verifier → multi-gate validation.
 >
 > *Lean is the verifier. The LLM is just a proposer.*
@@ -139,6 +145,22 @@ a constant-zero implementation; Lean accepts it; the critic catches
 it). See [docs/architecture.md](docs/architecture.md) for the why
 and [docs/pipeline.md](docs/pipeline.md) for the how.
 
+## Benchmarks at a glance
+
+Same 10 hard examples, three proposer/critic pairings:
+
+| Proposer | Critic | Lean acceptance | Theorem PASS | Wall-clock |
+|----------|--------|-----------------|--------------|------------|
+| Gemini 3.1 Pro | GPT-5.5 | **10/10** | 0/10 | ~38.5 min |
+| Claude Opus 4.7 | GPT-5.5 | 8/10 | 2/10 | **~8.5 min** |
+| GPT-5.5 | Claude Opus 4.7 | 9/10 | **6/10** | ~30.3 min |
+
+**Lean acceptance** (did the proof close?) and **theorem strength** (did the
+critic approve?) are independent signals. Gemini closes the most proofs; GPT
+writes the strongest theorems; Claude is the fastest sweep. Four examples were
+WEAK across all three proposers — the bottleneck there is the prompt, not the
+model. Full analysis in [docs/benchmarks.md](docs/benchmarks.md).
+
 ## What gets verified — scope
 
 `code2lean` works on any source language with an AST library and a
@@ -199,6 +221,10 @@ docs/                         # design notes, walkthrough, benchmarks, roadmap
 | [docs/benchmarks.md](docs/benchmarks.md) | Three-way Gemini/Claude/GPT proposer comparison + caveats |
 | [docs/scope-and-limits.md](docs/scope-and-limits.md) | What can be verified today; extending to other languages |
 | [docs/roadmap.md](docs/roadmap.md) | Mutation-kill, pass@k, distinguishability, vulnerability finding |
+
+## Blog
+
+[Can an LLM Formally Verify Your Code? A Feasibility Study](https://toooold.com/2026/05/07/code-to-lean.html) — motivation, a full `insecure_compare` walkthrough, benchmark analysis, and what comes next.
 
 ## License
 

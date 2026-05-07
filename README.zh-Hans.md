@@ -1,5 +1,11 @@
 # code2lean
 
+```
+░█▀▀░█▀█░█▀▄░█▀▀░▀▀▄░█░░░█▀▀░█▀█░█▀█
+░█░░░█░█░█░█░█▀▀░▄▀░░█░░░█▀▀░█▀█░█░█
+░▀▀▀░▀▀▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀░▀
+```
+
 > 源代码 → LLM 提议 → Lean 4 验证 → 多重门禁校验。
 >
 > *Lean 是验证者,LLM 只是提议者。*
@@ -132,6 +138,21 @@ Lean 会接受它;评审会指出来)。背后的动机见
 [docs/architecture.md](docs/architecture.md),具体实现见
 [docs/pipeline.md](docs/pipeline.md)。
 
+## 基准测试一览
+
+同一组 10 个较难样例,三种提议者/评审者组合:
+
+| 提议者 | 评审者 | Lean 通过率 | 定理 PASS 率 | 总耗时 |
+|--------|--------|-------------|--------------|--------|
+| Gemini 3.1 Pro | GPT-5.5 | **10/10** | 0/10 | ~38.5 分钟 |
+| Claude Opus 4.7 | GPT-5.5 | 8/10 | 2/10 | **~8.5 分钟** |
+| GPT-5.5 | Claude Opus 4.7 | 9/10 | **6/10** | ~30.3 分钟 |
+
+**Lean 通过率**（证明是否成功闭合）与**定理强度**（评审者是否认可）是两个独立信号。
+Gemini 最善于闭合证明;GPT 所写定理最强;Claude 速度最快,适合快速扫描大批示例。
+四个样例在三种提议者下均为 WEAK —— 瓶颈在提示词本身,而非模型。
+完整分析见 [docs/benchmarks.md](docs/benchmarks.md)。
+
 ## 适用范围
 
 `code2lean` 在架构上对任何具备 AST 库且类型系统能映射到 Lean 的源
@@ -190,6 +211,10 @@ docs/                         # 设计文档、单例走查、跨模型对比、
 | [docs/benchmarks.md](docs/benchmarks.md) | Gemini/Claude/GPT 三方提议者对比及注意事项 |
 | [docs/scope-and-limits.md](docs/scope-and-limits.md) | 当前能验证什么;如何扩展到其他语言 |
 | [docs/roadmap.md](docs/roadmap.md) | Mutation-kill、pass@k、可区分性、漏洞挖掘 |
+
+## 博客文章
+
+[LLM 能对你的代码做形式化验证吗?可行性研究](https://toooold.com/2026/05/07/code-to-lean.html) —— 动机介绍、`insecure_compare` 全流程走查、基准测试分析及后续方向。
 
 ## License
 
